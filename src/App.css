@@ -345,9 +345,20 @@ textarea { resize: vertical; }
   border: 1px solid var(--border);
 }
 
+/* ── Per-card colour themes ──────────────────────────────────────
+   theme-0  Basic    : dark steel    #37474f / light bg #eceff1
+   theme-1  Advanced : emerald green #059669 / light bg #e6f7f1
+   theme-2  Core     : deep violet   #4f46e5 / light bg #eeedfb
+──────────────────────────────────────────────────────────────── */
+.plan-card { --accent: var(--navy); --accent-bg: var(--card-bg); }
+
+.plan-card.theme-0 { --accent: #37474f; --accent-bg: #eceff1; }
+.plan-card.theme-1 { --accent: #059669; --accent-bg: #e6f7f1; }
+.plan-card.theme-2 { --accent: #4f46e5; --accent-bg: #eeedfb; }
+
 /* Card top */
 .card-top {
-  background: var(--card-bg);
+  background: var(--accent-bg);
   padding: 20px 18px 16px;
   border-bottom: 2px solid var(--border);
 }
@@ -359,7 +370,7 @@ textarea { resize: vertical; }
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--white);
-  background: var(--brand);
+  background: var(--accent);
   padding: 3px 9px;
   border-radius: 20px;
   margin-bottom: 10px;
@@ -472,7 +483,7 @@ textarea { resize: vertical; }
 
 /* Card footer */
 .card-footer {
-  background: var(--navy);
+  background: var(--accent);
   padding: 14px 18px;
   display: flex;
   align-items: center;

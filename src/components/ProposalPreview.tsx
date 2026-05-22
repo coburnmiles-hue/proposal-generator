@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import type { ProposalData } from '../types';
+import { SpotOnLogo } from './SpotOnLogo';
 
 interface Props {
   data: ProposalData;
@@ -16,13 +17,13 @@ function fmtDate(s: string) {
 }
 
 export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
-  const spotonName = data.companyName || 'SpotOn';
+
 
   return (
     <div className="doc-root" ref={ref}>
       {/* Page header */}
       <div className="doc-page-header">
-        {data.companyName && <div className="doc-brand">{data.companyName}</div>}
+        <div className="doc-brand"><SpotOnLogo size="normal" variant="light" /></div>
         <div className="doc-page-meta">
           {data.clientCompany && <span>{data.clientCompany}</span>}
           {data.clientName && <span>{data.clientName}</span>}
@@ -37,8 +38,8 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
         <div className="doc-empty">Add a plan on the left to see your proposal preview.</div>
       ) : (
         <div className={`doc-cards doc-cards-${data.plans.length}`}>
-          {data.plans.map((plan) => (
-            <div key={plan.id} className="plan-card">
+          {data.plans.map((plan, idx) => (
+            <div key={plan.id} className={`plan-card theme-${idx}`}>
               {/* Card top */}
               <div className="card-top">
                 {plan.name && <div className="card-plan-name">{plan.name}</div>}
@@ -66,8 +67,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   <div className="card-features-header">
                     <span className="cf-name"></span>
                     <span className="cf-col">
-                      <span className="cf-col-dot spoton-dot" />
-                      {spotonName}
+                      <SpotOnLogo size="small" variant="dark" />
                     </span>
                     <span className="cf-col">
                       <span className="cf-col-dot current-dot" />
