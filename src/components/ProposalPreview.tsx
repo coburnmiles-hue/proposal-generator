@@ -99,7 +99,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
 
               {/* Card footer */}
               <div className="card-footer">
-                <div className="card-footer-label">Total Investment</div>
+                <div className="card-footer-label">Total Savings</div>
                 <div className="card-footer-amount">{fmt(plan.totalInvestment)}</div>
               </div>
             </div>
