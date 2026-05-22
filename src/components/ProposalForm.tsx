@@ -49,9 +49,6 @@ export function ProposalForm({ data, onChange }: Props) {
         vmcPercentage: 0, vmcPerTx: 0,
         amexPercentage: 0, amexPerTx: 0,
       },
-      spotonMonthly: 0,
-      currentMonthly: 0,
-      hardwarePrice: 0,
       totalInvestment: 0,
       features: data.features.map((f) => ({
         featureId: f.id,
@@ -149,6 +146,29 @@ export function ProposalForm({ data, onChange }: Props) {
             </label>
           )}
         </div>
+      </section>
+
+      {/* Shared Pricing */}
+      <section className="form-section">
+        <h3>Pricing</h3>
+        <p className="form-hint">These amounts are the same across all plan options.</p>
+        <div className="field-group">
+          <label>
+            SpotOn Monthly ($)
+            <input type="number" min={0} value={data.spotonMonthly}
+              onChange={(e) => set('spotonMonthly', parseFloat(e.target.value) || 0)} />
+          </label>
+          <label>
+            Current Monthly ($)
+            <input type="number" min={0} value={data.currentMonthly}
+              onChange={(e) => set('currentMonthly', parseFloat(e.target.value) || 0)} />
+          </label>
+        </div>
+        <label>
+          Hardware + Implementation ($)
+          <input type="number" min={0} value={data.hardwarePrice}
+            onChange={(e) => set('hardwarePrice', parseFloat(e.target.value) || 0)} />
+        </label>
       </section>
 
       {/* Features List */}
@@ -282,47 +302,15 @@ export function ProposalForm({ data, onChange }: Props) {
               )}
             </div>
 
-            <div className="field-group">
-              <label>
-                {data.companyName || 'SpotOn'} Monthly ($)
-                <input
-                  type="number"
-                  min={0}
-                  value={plan.spotonMonthly}
-                  onChange={(e) => updatePlan(plan.id, 'spotonMonthly', parseFloat(e.target.value) || 0)}
-                />
-              </label>
-              <label>
-                Current Monthly ($)
-                <input
-                  type="number"
-                  min={0}
-                  value={plan.currentMonthly}
-                  onChange={(e) => updatePlan(plan.id, 'currentMonthly', parseFloat(e.target.value) || 0)}
-                />
-              </label>
-            </div>
-
-            <div className="field-group">
-              <label>
-                Hardware + Implementation ($)
-                <input
-                  type="number"
-                  min={0}
-                  value={plan.hardwarePrice}
-                  onChange={(e) => updatePlan(plan.id, 'hardwarePrice', parseFloat(e.target.value) || 0)}
-                />
-              </label>
-              <label>
-                Total Investment ($)
-                <input
-                  type="number"
-                  min={0}
-                  value={plan.totalInvestment}
-                  onChange={(e) => updatePlan(plan.id, 'totalInvestment', parseFloat(e.target.value) || 0)}
-                />
-              </label>
-            </div>
+            <label>
+              Total Savings ($)
+              <input
+                type="number"
+                min={0}
+                value={plan.totalInvestment}
+                onChange={(e) => updatePlan(plan.id, 'totalInvestment', parseFloat(e.target.value) || 0)}
+              />
+            </label>
 
             {/* Feature toggles */}
             {data.features.length > 0 && (

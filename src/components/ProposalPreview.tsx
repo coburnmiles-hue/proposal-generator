@@ -45,6 +45,24 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
 
       <h2 className="doc-heading">Your Options</h2>
 
+      {/* Shared pricing banner */}
+      <div className="doc-pricing-banner">
+        <div className="dpb-block">
+          <div className="dpb-amount">{fmt(data.spotonMonthly)}<span className="dpb-period">/mo</span></div>
+          <div className="dpb-label">Proposed Monthly Software</div>
+        </div>
+        <div className="dpb-divider" />
+        <div className="dpb-block">
+          <div className="dpb-amount dpb-current">{fmt(data.currentMonthly)}<span className="dpb-period">/mo</span></div>
+          <div className="dpb-label">Current Monthly Software</div>
+        </div>
+        <div className="dpb-divider" />
+        <div className="dpb-block">
+          <div className="dpb-amount">{fmt(data.hardwarePrice)}</div>
+          <div className="dpb-label">Hardware + Implementation</div>
+        </div>
+      </div>
+
       {/* Cards */}
       {data.plans.length === 0 ? (
         <div className="doc-empty">Add a plan on the left to see your proposal preview.</div>
@@ -77,21 +95,6 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                         <span>AMEX: {plan.rate.amexPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}/tx</span>
                       </>
                     )}
-                  </div>
-                </div>
-
-                <div className="card-summary">
-                  <div className="card-summary-row">
-                    <span className="cs-label">Proposed Monthly Software</span>
-                    <span className="cs-amount cs-spoton">{fmt(plan.spotonMonthly)}</span>
-                  </div>
-                  <div className="card-summary-row">
-                    <span className="cs-label">Current Software</span>
-                    <span className="cs-amount cs-current">{fmt(plan.currentMonthly)}</span>
-                  </div>
-                  <div className="card-summary-row cs-hardware-row">
-                    <span className="cs-label">Hardware + Implementation</span>
-                    <span className="cs-amount cs-hardware">{fmt(plan.hardwarePrice)}</span>
                   </div>
                 </div>
               </div>

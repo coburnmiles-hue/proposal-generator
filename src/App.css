@@ -391,6 +391,54 @@ textarea { resize: vertical; }
   padding: 48px 0;
 }
 
+/* Shared pricing banner */
+.doc-pricing-banner {
+  display: flex;
+  align-items: center;
+  background: var(--navy);
+  border-radius: 12px;
+  padding: 18px 28px;
+  margin-bottom: 16px;
+  gap: 0;
+}
+
+.dpb-block {
+  flex: 1;
+  text-align: center;
+}
+
+.dpb-divider {
+  width: 1px;
+  height: 44px;
+  background: rgba(255,255,255,0.15);
+  flex-shrink: 0;
+}
+
+.dpb-amount {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.dpb-period {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.55;
+  margin-left: 2px;
+}
+
+.dpb-current { color: #ff8fa8; }
+
+.dpb-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.45);
+}
+
 /* Cards grid */
 .doc-cards {
   display: grid;
