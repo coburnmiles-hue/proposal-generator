@@ -17,21 +17,8 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
     <div className="doc-root" ref={ref}>
       {/* Page header */}
       <div className="doc-page-header">
-        <div className="doc-logos">
-          <SpotOnLogo size="normal" variant="dark" />
-          {data.clientLogoUrl && (
-            <>
-              <svg className="doc-logo-x" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-                <line x1="2" y1="2" x2="14" y2="14" strokeWidth="1.5" strokeLinecap="round"/>
-                <line x1="14" y1="2" x2="2" y2="14" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-              <img
-                src={data.clientLogoUrl}
-                alt={data.clientCompany || 'Client'}
-                className="doc-client-logo"
-              />
-            </>
-          )}
+        <div className="better-together">
+          Better <strong>together</strong><span className="bt-dot">.</span>
         </div>
         <div className="doc-page-meta">
           {data.clientCompany && <span>{data.clientCompany}</span>}
