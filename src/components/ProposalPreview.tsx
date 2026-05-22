@@ -10,12 +10,6 @@ function fmt(n: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 }
 
-function fmtDate(s: string) {
-  if (!s) return '';
-  const [y, m, d] = s.split('-').map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
 export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref) => {
 
 
