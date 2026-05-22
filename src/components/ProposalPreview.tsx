@@ -46,7 +46,16 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
         </div>
       </div>
 
-
+      {/* Prepared for intro */}
+      {(data.clientCompany || data.clientName) && (
+        <div className="doc-intro">
+          <p className="doc-intro-label">Prepared for</p>
+          <h1 className="doc-intro-name">{data.clientCompany || data.clientName}</h1>
+          {data.clientCompany && data.clientName && (
+            <p className="doc-intro-contact">{data.clientName}</p>
+          )}
+        </div>
+      )}
 
       {/* Cards */}
       {data.plans.length === 0 ? (
@@ -141,6 +150,12 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
           </div>
         );
       })()}
+
+      {/* Footer */}
+      <div className="doc-footer">
+        <span>Prepared by {data.companyName}</span>
+        {data.date && <span>{fmtDate(data.date)}</span>}
+      </div>
     </div>
   );
 });
