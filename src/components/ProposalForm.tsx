@@ -111,6 +111,37 @@ export function ProposalForm({ data, onChange }: Props) {
             <input type="date" value={data.date} onChange={(e) => set('date', e.target.value)} />
           </label>
         </div>
+
+        {/* Client logo upload */}
+        <div className="logo-upload-field">
+          <span className="logo-upload-label">Client Logo</span>
+          {data.clientLogoUrl ? (
+            <div className="logo-upload-preview">
+              <img src={data.clientLogoUrl} alt="Client logo" />
+              <button
+                className="btn-remove"
+                onClick={() => set('clientLogoUrl', '')}
+                title="Remove logo"
+              >✕</button>
+            </div>
+          ) : (
+            <label className="logo-upload-btn">
+              Upload Logo
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = (ev) => set('clientLogoUrl', ev.target?.result as string);
+                  reader.readAsDataURL(file);
+                }}
+              />
+            </label>
+          )}
+        </div>
       </section>
 
       {/* Features List */}

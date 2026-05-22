@@ -23,7 +23,19 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
     <div className="doc-root" ref={ref}>
       {/* Page header */}
       <div className="doc-page-header">
-        <div className="doc-brand"><SpotOnLogo size="normal" variant="light" /></div>
+        <div className="doc-logos">
+          <SpotOnLogo size="normal" variant="light" />
+          {data.clientLogoUrl && (
+            <>
+              <span className="doc-logo-x">×</span>
+              <img
+                src={data.clientLogoUrl}
+                alt={data.clientCompany || 'Client'}
+                className="doc-client-logo"
+              />
+            </>
+          )}
+        </div>
         <div className="doc-page-meta">
           {data.clientCompany && <span>{data.clientCompany}</span>}
           {data.clientName && <span>{data.clientName}</span>}

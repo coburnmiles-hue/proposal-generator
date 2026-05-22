@@ -23,6 +23,7 @@ export interface Plan {
 export interface ProposalData {
   clientName: string;
   clientCompany: string;
+  clientLogoUrl: string;
   date: string;
   companyName: string;
   features: Feature[];

@@ -36,6 +36,7 @@ const makeDefaultPlan = (name: string, features: typeof DEFAULT_FEATURES) => ({
 const defaultData: ProposalData = {
   clientName: '',
   clientCompany: '',
+  clientLogoUrl: '',
   date: new Date().toISOString().split('T')[0],
   companyName: 'SpotOn',
   features: DEFAULT_FEATURES,
