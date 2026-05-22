@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import type { Feature, Plan, PlanFeature, PlanRate, ProposalData } from '../types';
+import type { Plan, PlanFeature, PlanRate, ProposalData } from '../types';
 
 interface Props {
   data: ProposalData;
@@ -11,19 +12,17 @@ export function ProposalForm({ data, onChange }: Props) {
     onChange({ ...data, [field]: value });
 
   // ---- Features ----
-  const addFeature = () => {
-    const feature: Feature = { id: uuidv4(), name: '' };
-    const newFeatures = [...data.features, feature];
-    // sync all plans
+  const [newFeatName, setNewFeatName] = useState('');
+
+  const addFeature = (name: string) => {
+    if (!name.trim()) return;
+    const id = uuidv4();
+    const newFeatures = [...data.features, { id, name: name.trim(), enabled: true }];
     const plans = data.plans.map((p) => ({
       ...p,
-      features: [...p.features, { featureId: feature.id, spotonIncluded: false, currentIncluded: false }],
+      features: [...p.features, { featureId: id, spotonIncluded: false, currentIncluded: false }],
     }));
     onChange({ ...data, features: newFeatures, plans });
-  };
-
-  const updateFeature = (id: string, name: string) => {
-    set('features', data.features.map((f) => (f.id === id ? { ...f, name } : f)));
   };
 
   const removeFeature = (id: string) => {
@@ -33,6 +32,21 @@ export function ProposalForm({ data, onChange }: Props) {
       features: p.features.filter((pf) => pf.featureId !== id),
     }));
     onChange({ ...data, features, plans });
+  };
+
+  const toggleFeatureEnabled = (id: string) => {
+    set('features', data.features.map((f) =>
+      f.id === id ? { ...f, enabled: !(f.enabled !== false) } : f
+    ));
+  };
+
+  const moveFeature = (id: string, dir: -1 | 1) => {
+    const idx = data.features.findIndex((f) => f.id === id);
+    const next = idx + dir;
+    if (next < 0 || next >= data.features.length) return;
+    const arr = [...data.features];
+    [arr[idx], arr[next]] = [arr[next], arr[idx]];
+    set('features', arr);
   };
 
   // ---- Plans ----
@@ -152,69 +166,62 @@ export function ProposalForm({ data, onChange }: Props) {
         </div>
       </section>
 
-      {/* Features List */}
+      {/* Features */}
       <section className="form-section">
         <div className="section-header">
           <h3>Features</h3>
-          <button className="btn-add" onClick={addFeature}>+ Add</button>
         </div>
-        <p className="form-hint">These appear as rows in every plan's comparison table.</p>
-        <div className="feature-list">
-          {data.features.map((f, i) => (
-            <div key={f.id} className="feature-row">
-              <span className="line-num">#{i + 1}</span>
-              <input
-                value={f.name}
-                onChange={(e) => updateFeature(f.id, e.target.value)}
-                placeholder="e.g. Online Ordering"
-              />
-              <button className="btn-remove" onClick={() => removeFeature(f.id)}>✕</button>
-            </div>
-          ))}
+        <p className="form-hint">Check to include in proposal. Toggle ✓/✗ for SpotOn vs Current coverage.</p>
+        <div className="feat-header">
+          <span /><span /><span />
+          <span className="ft-col">{data.companyName || 'SpotOn'}</span>
+          <span className="ft-col">Current</span>
+          <span />
+        </div>
+        <div className="feat-list">
+          {data.features.map((f, i) => {
+            const pf = data.plans.length > 0 ? getPlanFeature(data.plans[0], f.id) : null;
+            const isEnabled = f.enabled !== false;
+            return (
+              <div key={f.id} className={`feat-row${isEnabled ? '' : ' feat-row-disabled'}`}>
+                <div className="feat-reorder">
+                  <button disabled={i === 0} onClick={() => moveFeature(f.id, -1)} title="Move up">▲</button>
+                  <button disabled={i === data.features.length - 1} onClick={() => moveFeature(f.id, 1)} title="Move down">▼</button>
+                </div>
+                <input
+                  type="checkbox"
+                  className="feat-checkbox"
+                  checked={isEnabled}
+                  onChange={() => toggleFeatureEnabled(f.id)}
+                />
+                <span className="feat-name">{f.name}</span>
+                {pf ? (
+                  <button className={`toggle-btn ${pf.spotonIncluded ? 'on' : 'off'}`}
+                    onClick={() => toggleSharedFeature(f.id, 'spotonIncluded')}>
+                    {pf.spotonIncluded ? '✓' : '✗'}
+                  </button>
+                ) : <span />}
+                {pf ? (
+                  <button className={`toggle-btn ${pf.currentIncluded ? 'on' : 'off'}`}
+                    onClick={() => toggleSharedFeature(f.id, 'currentIncluded')}>
+                    {pf.currentIncluded ? '✓' : '✗'}
+                  </button>
+                ) : <span />}
+                <button className="btn-remove" onClick={() => removeFeature(f.id)}>✕</button>
+              </div>
+            );
+          })}
+        </div>
+        <div className="feat-add-row">
+          <input
+            value={newFeatName}
+            onChange={(e) => setNewFeatName(e.target.value)}
+            placeholder="Add a feature…"
+            onKeyDown={(e) => { if (e.key === 'Enter') { addFeature(newFeatName); setNewFeatName(''); } }}
+          />
+          <button className="btn-add" onClick={() => { addFeature(newFeatName); setNewFeatName(''); }}>+ Add</button>
         </div>
       </section>
-
-      {/* Shared Feature Comparison — applies to all plans */}
-      {data.features.length > 0 && data.plans.length > 0 && (() => {
-        const ref = data.plans[0];
-        return (
-          <section className="form-section">
-            <h3>Feature Comparison</h3>
-            <p className="form-hint">These toggles apply to all plans at once.</p>
-            <div className="feature-toggles">
-              <div className="feature-toggle-header">
-                <span className="ft-name">Feature</span>
-                <span className="ft-col">{data.companyName || 'SpotOn'}</span>
-                <span className="ft-col">Current</span>
-              </div>
-              {data.features.map((f) => {
-                const pf = getPlanFeature(ref, f.id);
-                return (
-                  <div key={f.id} className="feature-toggle-row">
-                    <span className="ft-name">{f.name || <em>unnamed</em>}</span>
-                    <span className="ft-col">
-                      <button
-                        className={`toggle-btn ${pf.spotonIncluded ? 'on' : 'off'}`}
-                        onClick={() => toggleSharedFeature(f.id, 'spotonIncluded')}
-                      >
-                        {pf.spotonIncluded ? '✓' : '✗'}
-                      </button>
-                    </span>
-                    <span className="ft-col">
-                      <button
-                        className={`toggle-btn ${pf.currentIncluded ? 'on' : 'off'}`}
-                        onClick={() => toggleSharedFeature(f.id, 'currentIncluded')}
-                      >
-                        {pf.currentIncluded ? '✓' : '✗'}
-                      </button>
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        );
-      })()}
 
       {/* Plans */}
       <section className="form-section">

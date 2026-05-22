@@ -51,7 +51,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   <span className="sft-col sft-col-spoton">SpotOn</span>
                   <span className="sft-col">Current</span>
                 </div>
-                {data.features.map((f) => {
+                {data.features.filter((f) => f.enabled !== false).map((f) => {
                   const pf = ref.features.find((x) => x.featureId === f.id);
                   const spoton = pf?.spotonIncluded ?? false;
                   const current = pf?.currentIncluded ?? false;

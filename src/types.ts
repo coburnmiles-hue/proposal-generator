@@ -1,6 +1,7 @@
 export interface Feature {
   id: string;
   name: string;
+  enabled?: boolean;
 }
 
 export interface PlanFeature {
