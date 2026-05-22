@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { v4 as uuidv4 } from 'uuid';
@@ -6,6 +6,27 @@ import './App.css';
 import { ProposalForm } from './components/ProposalForm';
 import { ProposalPreview } from './components/ProposalPreview';
 import type { ProposalData } from './types';
+
+const STORAGE_KEY = 'spoton-saved-proposals';
+
+interface SavedProposal {
+  id: string;
+  name: string;
+  savedAt: string;
+  data: ProposalData;
+}
+
+function loadSaved(): SavedProposal[] {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function persistSaved(list: SavedProposal[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
 
 const DEFAULT_FEATURES = [
   { id: uuidv4(), name: 'Handhelds' },
@@ -63,7 +84,41 @@ const defaultData: ProposalData = {
 
 function App() {
   const [data, setData] = useState<ProposalData>(defaultData);
+  const [saved, setSaved] = useState<SavedProposal[]>(loadSaved);
+  const [showSaved, setShowSaved] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
+  const savedDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleOutsideClick(e: MouseEvent) {
+      if (savedDropdownRef.current && !savedDropdownRef.current.contains(e.target as Node)) {
+        setShowSaved(false);
+      }
+    }
+    if (showSaved) document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [showSaved]);
+
+  const handleSave = () => {
+    const name = (data.clientCompany || data.clientName || 'Untitled').trim();
+    const entry: SavedProposal = { id: uuidv4(), name, savedAt: new Date().toISOString(), data };
+    const updated = [entry, ...saved];
+    setSaved(updated);
+    persistSaved(updated);
+  };
+
+  const handleLoad = (entry: SavedProposal) => {
+    setData(entry.data);
+    setShowSaved(false);
+  };
+
+  const handleDelete = (id: string) => {
+    const updated = saved.filter((s) => s.id !== id);
+    setSaved(updated);
+    persistSaved(updated);
+  };
+
+  const handleNew = () => setData(defaultData);
 
   const handleExportPDF = async () => {
     const docRoot = previewRef.current?.querySelector<HTMLElement>('.doc-root');
@@ -96,9 +151,41 @@ function App() {
     <div className="app">
       <div className="app-header">
         <h1 className="app-title">Proposal Generator</h1>
-        <button className="btn-export" onClick={handleExportPDF}>
-          Export PDF
-        </button>
+        <div className="header-actions">
+          <button className="btn-secondary" onClick={handleNew}>New</button>
+          <button className="btn-secondary" onClick={handleSave}>Save</button>
+          <div className="saved-dropdown" ref={savedDropdownRef}>
+            <button
+              className={`btn-secondary${showSaved ? ' active' : ''}`}
+              onClick={() => setShowSaved((v) => !v)}
+            >
+              Saved{saved.length > 0 ? ` (${saved.length})` : ''}
+            </button>
+            {showSaved && (
+              <div className="saved-panel">
+                {saved.length === 0 ? (
+                  <p className="saved-empty">No saved proposals yet.</p>
+                ) : (
+                  saved.map((entry) => (
+                    <div key={entry.id} className="saved-item">
+                      <div className="saved-item-info">
+                        <span className="saved-item-name">{entry.name}</span>
+                        <span className="saved-item-date">
+                          {new Date(entry.savedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="saved-item-btns">
+                        <button onClick={() => handleLoad(entry)}>Load</button>
+                        <button className="saved-item-del" onClick={() => handleDelete(entry.id)}>✕</button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+          <button className="btn-export" onClick={handleExportPDF}>Export PDF</button>
+        </div>
       </div>
       <div className="app-body">
         <ProposalForm data={data} onChange={setData} />

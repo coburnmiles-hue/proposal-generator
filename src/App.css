@@ -75,6 +75,112 @@ body {
 }
 .btn-export:hover { background: var(--brand-dark); }
 
+/* Header action group */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.12);
+  color: var(--white);
+  border: 1px solid rgba(255,255,255,0.22);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.btn-secondary:hover,
+.btn-secondary.active { background: rgba(255,255,255,0.24); }
+
+/* Saved proposals dropdown */
+.saved-dropdown {
+  position: relative;
+}
+
+.saved-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 280px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.saved-empty {
+  padding: 20px 16px;
+  margin: 0;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.saved-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+.saved-item:last-child { border-bottom: none; }
+.saved-item:hover { background: #f8f9fc; }
+
+.saved-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.saved-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.saved-item-date {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.saved-item-btns {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.saved-item-btns button {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text-dark);
+  transition: background 0.12s;
+}
+.saved-item-btns button:hover { background: #f0f2f8; }
+
+.saved-item-del {
+  color: var(--brand) !important;
+  border-color: #fcd0d9 !important;
+}
+.saved-item-del:hover { background: #fff0f3 !important; }
+
 .app-body {
   display: grid;
   grid-template-columns: 380px 1fr;
