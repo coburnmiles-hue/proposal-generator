@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { useReactToPrint } from 'react-to-print';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 import { ProposalForm } from './components/ProposalForm';
@@ -64,16 +65,38 @@ function App() {
   const [data, setData] = useState<ProposalData>(defaultData);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const handlePrint = useReactToPrint({
-    contentRef: previewRef,
-    documentTitle: `${data.clientCompany || 'Proposal'} - Options`,
-  });
+  const handleExportPDF = async () => {
+    const docRoot = previewRef.current?.querySelector<HTMLElement>('.doc-root');
+    if (!docRoot) return;
+
+    const btn = document.querySelector<HTMLButtonElement>('.btn-export');
+    if (btn) btn.disabled = true;
+
+    try {
+      const canvas = await html2canvas(docRoot, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+      });
+
+      const pxToMm = 25.4 / 96; // CSS px → mm at 96 dpi
+      const pdfW = (canvas.width / 2) * pxToMm;
+      const pdfH = (canvas.height / 2) * pxToMm;
+
+      const pdf = new jsPDF({ unit: 'mm', format: [pdfW, pdfH] });
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfW, pdfH);
+      pdf.save(`${data.clientCompany || 'Proposal'} - Options.pdf`);
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  };
 
   return (
     <div className="app">
       <div className="app-header">
         <h1 className="app-title">Proposal Generator</h1>
-        <button className="btn-export" onClick={() => handlePrint()}>
+        <button className="btn-export" onClick={handleExportPDF}>
           Export PDF
         </button>
       </div>
