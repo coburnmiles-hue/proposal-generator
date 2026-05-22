@@ -188,6 +188,89 @@ body {
   overflow: hidden;
 }
 
+/* ===== Password Gate ===== */
+.gate-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--page-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.gate-card {
+  background: var(--white);
+  border-radius: 20px;
+  border-top: 5px solid var(--spoton-blue);
+  box-shadow: 0 8px 48px rgba(15,30,61,0.14);
+  padding: 44px 48px 40px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+
+.gate-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--spoton-blue);
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.gate-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0 0 6px;
+  letter-spacing: -0.5px;
+}
+
+.gate-subtitle {
+  font-size: 14px;
+  color: var(--text-light);
+  margin: 0 0 28px;
+}
+
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gate-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.gate-input:focus { border-color: var(--spoton-blue); }
+.gate-input-error { border-color: var(--brand) !important; }
+
+.gate-error {
+  font-size: 13px;
+  color: var(--brand);
+  margin: 0;
+}
+
+.gate-btn {
+  background: var(--spoton-blue);
+  color: var(--white);
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.gate-btn:hover { opacity: 0.88; }
+
 /* ===== Form Panel ===== */
 .form-panel {
   background: var(--white);
