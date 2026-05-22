@@ -38,10 +38,11 @@ const DEFAULT_FEATURES = [
   { id: uuidv4(), name: 'Profit Assist' },
   { id: uuidv4(), name: 'Scheduling' },
   { id: uuidv4(), name: 'Tip Automation' },
-  { id: uuidv4(), name: 'Employee Instant Deposit' },
+  { id: uuidv4(), name: 'Instant Cash Tip Deposit' },
   { id: uuidv4(), name: 'Loyalty' },
-  { id: uuidv4(), name: 'Reserve' },
-  { id: uuidv4(), name: 'Success Agent' },
+  { id: uuidv4(), name: 'Reservation Manager' },
+  { id: uuidv4(), name: 'Local & 24/7 Support' },
+  { id: uuidv4(), name: 'DD / UE Integrations' },
 ];
 
 const DEFAULT_RATE = {
