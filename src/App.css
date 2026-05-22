@@ -347,17 +347,17 @@ textarea { resize: vertical; }
 }
 
 .doc-logo-x {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 300;
-  color: rgba(255,255,255,0.55);
+  color: var(--text-light);
   line-height: 1;
+  user-select: none;
 }
 
 .doc-client-logo {
   max-height: 30px;
-  max-width: 120px;
+  max-width: 140px;
   object-fit: contain;
-  filter: brightness(0) invert(1); /* make it white to match SpotOn logo */
 }
 
 .doc-brand {

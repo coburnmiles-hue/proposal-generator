@@ -24,7 +24,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
       {/* Page header */}
       <div className="doc-page-header">
         <div className="doc-logos">
-          <SpotOnLogo size="normal" variant="light" />
+          <SpotOnLogo size="normal" variant="dark" />
           {data.clientLogoUrl && (
             <>
               <span className="doc-logo-x">×</span>
@@ -79,7 +79,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   <div className="card-features-header">
                     <span className="cf-name"></span>
                     <span className="cf-col">
-                      <SpotOnLogo size="small" variant="dark" />
+                      <span className="cf-col-dot spoton-dot" />SpotOn
                     </span>
                     <span className="cf-col">
                       <span className="cf-col-dot current-dot" />
