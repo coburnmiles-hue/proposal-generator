@@ -40,8 +40,9 @@ const defaultData: ProposalData = {
   companyName: 'SpotOn',
   features: DEFAULT_FEATURES,
   plans: [
-    makeDefaultPlan('Option 1', DEFAULT_FEATURES),
-    makeDefaultPlan('Option 2', DEFAULT_FEATURES),
+    makeDefaultPlan('SpotOn Basic', DEFAULT_FEATURES),
+    makeDefaultPlan('SpotOn Advanced', DEFAULT_FEATURES),
+    makeDefaultPlan('SpotOn Core', DEFAULT_FEATURES),
   ],
 };
 
