@@ -122,7 +122,7 @@ function App() {
   const handleNew = () => setData(defaultData);
 
   const handleExportPDF = async () => {
-    const docRoot = previewRef.current?.querySelector<HTMLElement>('.doc-root');
+    const docRoot = previewRef.current;
     if (!docRoot) return;
 
     const btn = document.querySelector<HTMLButtonElement>('.btn-export');
