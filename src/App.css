@@ -686,7 +686,7 @@ textarea { resize: vertical; }
 }
 
 /* ===== Shared feature table (below cards) ===== */
-.shared-features { margin-top: 4px; }
+.shared-features { margin-bottom: 28px; }
 
 .shared-feature-table {
   border: 1px solid var(--border);
@@ -736,13 +736,14 @@ textarea { resize: vertical; }
 }
 
 /* ===== Print ===== */
+@page { margin: 20mm; }
 @media print {
   .app-header { display: none; }
   .form-panel { display: none; }
   .app-body { grid-template-columns: 1fr; }
   .preview-panel {
     height: auto;
-    padding: 24px;
+    padding: 0;
     background: #fff;
   }
   .doc-root { max-width: 100%; background: #fff; border-radius: 0; box-shadow: none; padding: 0; border-top: none; }
