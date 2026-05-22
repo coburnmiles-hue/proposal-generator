@@ -391,54 +391,6 @@ textarea { resize: vertical; }
   padding: 48px 0;
 }
 
-/* Shared pricing banner */
-.doc-pricing-banner {
-  display: flex;
-  align-items: center;
-  background: var(--navy);
-  border-radius: 12px;
-  padding: 18px 28px;
-  margin-bottom: 16px;
-  gap: 0;
-}
-
-.dpb-block {
-  flex: 1;
-  text-align: center;
-}
-
-.dpb-divider {
-  width: 1px;
-  height: 44px;
-  background: rgba(255,255,255,0.15);
-  flex-shrink: 0;
-}
-
-.dpb-amount {
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--white);
-  line-height: 1;
-  margin-bottom: 5px;
-}
-
-.dpb-period {
-  font-size: 13px;
-  font-weight: 500;
-  opacity: 0.55;
-  margin-left: 2px;
-}
-
-.dpb-current { color: #ff8fa8; }
-
-.dpb-label {
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.45);
-}
-
 /* Cards grid */
 .doc-cards {
   display: grid;
@@ -694,6 +646,42 @@ textarea { resize: vertical; }
   color: var(--white);
   letter-spacing: -0.5px;
 }
+
+/* ===== Shared feature table (below cards) ===== */
+.shared-features { margin-top: 4px; }
+
+.shared-feature-table {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.sft-header {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  padding: 10px 20px;
+  background: #f8f9fc;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-light);
+}
+
+.sft-row {
+  display: grid;
+  grid-template-columns: 1fr 80px 80px;
+  padding: 8px 20px;
+  border-bottom: 1px solid #f5f6fb;
+  align-items: center;
+}
+.sft-row:last-child { border-bottom: none; }
+
+.sft-name { font-size: 13px; color: var(--text-dark); }
+.sft-col  { text-align: center; }
+.sft-col-spoton { color: var(--spoton-blue); font-weight: 800; }
 
 /* ===== Print ===== */
 @media print {

@@ -49,6 +49,9 @@ export function ProposalForm({ data, onChange }: Props) {
         vmcPercentage: 0, vmcPerTx: 0,
         amexPercentage: 0, amexPerTx: 0,
       },
+      spotonMonthly: 0,
+      currentMonthly: 0,
+      hardwarePrice: 0,
       totalInvestment: 0,
       features: data.features.map((f) => ({
         featureId: f.id,
@@ -81,6 +84,23 @@ export function ProposalForm({ data, onChange }: Props) {
             }
       )
     );
+  };
+
+  // Toggle a feature across ALL plans simultaneously (shared comparison table)
+  const toggleSharedFeature = (featureId: string, col: 'spotonIncluded' | 'currentIncluded') => {
+    const ref = data.plans[0];
+    if (!ref) return;
+    const current = ref.features.find((pf) => pf.featureId === featureId)?.[col] ?? false;
+    const newVal = !current;
+    onChange({
+      ...data,
+      plans: data.plans.map((p) => ({
+        ...p,
+        features: p.features.map((pf) =>
+          pf.featureId === featureId ? { ...pf, [col]: newVal } : pf
+        ),
+      })),
+    });
   };
 
   const getPlanFeature = (plan: Plan, featureId: string): PlanFeature =>
@@ -148,29 +168,6 @@ export function ProposalForm({ data, onChange }: Props) {
         </div>
       </section>
 
-      {/* Shared Pricing */}
-      <section className="form-section">
-        <h3>Pricing</h3>
-        <p className="form-hint">These amounts are the same across all plan options.</p>
-        <div className="field-group">
-          <label>
-            SpotOn Monthly ($)
-            <input type="number" min={0} value={data.spotonMonthly}
-              onChange={(e) => set('spotonMonthly', parseFloat(e.target.value) || 0)} />
-          </label>
-          <label>
-            Current Monthly ($)
-            <input type="number" min={0} value={data.currentMonthly}
-              onChange={(e) => set('currentMonthly', parseFloat(e.target.value) || 0)} />
-          </label>
-        </div>
-        <label>
-          Hardware + Implementation ($)
-          <input type="number" min={0} value={data.hardwarePrice}
-            onChange={(e) => set('hardwarePrice', parseFloat(e.target.value) || 0)} />
-        </label>
-      </section>
-
       {/* Features List */}
       <section className="form-section">
         <div className="section-header">
@@ -192,6 +189,48 @@ export function ProposalForm({ data, onChange }: Props) {
           ))}
         </div>
       </section>
+
+      {/* Shared Feature Comparison — applies to all plans */}
+      {data.features.length > 0 && data.plans.length > 0 && (() => {
+        const ref = data.plans[0];
+        return (
+          <section className="form-section">
+            <h3>Feature Comparison</h3>
+            <p className="form-hint">These toggles apply to all plans at once.</p>
+            <div className="feature-toggles">
+              <div className="feature-toggle-header">
+                <span className="ft-name">Feature</span>
+                <span className="ft-col">{data.companyName || 'SpotOn'}</span>
+                <span className="ft-col">Current</span>
+              </div>
+              {data.features.map((f) => {
+                const pf = getPlanFeature(ref, f.id);
+                return (
+                  <div key={f.id} className="feature-toggle-row">
+                    <span className="ft-name">{f.name || <em>unnamed</em>}</span>
+                    <span className="ft-col">
+                      <button
+                        className={`toggle-btn ${pf.spotonIncluded ? 'on' : 'off'}`}
+                        onClick={() => toggleSharedFeature(f.id, 'spotonIncluded')}
+                      >
+                        {pf.spotonIncluded ? '✓' : '✗'}
+                      </button>
+                    </span>
+                    <span className="ft-col">
+                      <button
+                        className={`toggle-btn ${pf.currentIncluded ? 'on' : 'off'}`}
+                        onClick={() => toggleSharedFeature(f.id, 'currentIncluded')}
+                      >
+                        {pf.currentIncluded ? '✓' : '✗'}
+                      </button>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Plans */}
       <section className="form-section">
@@ -302,50 +341,47 @@ export function ProposalForm({ data, onChange }: Props) {
               )}
             </div>
 
-            <label>
-              Total Savings ($)
-              <input
-                type="number"
-                min={0}
-                value={plan.totalInvestment}
-                onChange={(e) => updatePlan(plan.id, 'totalInvestment', parseFloat(e.target.value) || 0)}
-              />
-            </label>
+            <div className="field-group">
+              <label>
+                {data.companyName || 'SpotOn'} Monthly ($)
+                <input
+                  type="number"
+                  min={0}
+                  value={plan.spotonMonthly}
+                  onChange={(e) => updatePlan(plan.id, 'spotonMonthly', parseFloat(e.target.value) || 0)}
+                />
+              </label>
+              <label>
+                Current Monthly ($)
+                <input
+                  type="number"
+                  min={0}
+                  value={plan.currentMonthly}
+                  onChange={(e) => updatePlan(plan.id, 'currentMonthly', parseFloat(e.target.value) || 0)}
+                />
+              </label>
+            </div>
 
-            {/* Feature toggles */}
-            {data.features.length > 0 && (
-              <div className="feature-toggles">
-                <div className="feature-toggle-header">
-                  <span className="ft-name">Feature</span>
-                  <span className="ft-col">{data.companyName || 'SpotOn'}</span>
-                  <span className="ft-col">Current</span>
-                </div>
-                {data.features.map((f) => {
-                  const pf = getPlanFeature(plan, f.id);
-                  return (
-                    <div key={f.id} className="feature-toggle-row">
-                      <span className="ft-name">{f.name || <em>unnamed</em>}</span>
-                      <span className="ft-col">
-                        <button
-                          className={`toggle-btn ${pf.spotonIncluded ? 'on' : 'off'}`}
-                          onClick={() => toggleFeature(plan.id, f.id, 'spotonIncluded')}
-                        >
-                          {pf.spotonIncluded ? '✓' : '✗'}
-                        </button>
-                      </span>
-                      <span className="ft-col">
-                        <button
-                          className={`toggle-btn ${pf.currentIncluded ? 'on' : 'off'}`}
-                          onClick={() => toggleFeature(plan.id, f.id, 'currentIncluded')}
-                        >
-                          {pf.currentIncluded ? '✓' : '✗'}
-                        </button>
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+            <div className="field-group">
+              <label>
+                Hardware + Implementation ($)
+                <input
+                  type="number"
+                  min={0}
+                  value={plan.hardwarePrice}
+                  onChange={(e) => updatePlan(plan.id, 'hardwarePrice', parseFloat(e.target.value) || 0)}
+                />
+              </label>
+              <label>
+                Total Savings ($)
+                <input
+                  type="number"
+                  min={0}
+                  value={plan.totalInvestment}
+                  onChange={(e) => updatePlan(plan.id, 'totalInvestment', parseFloat(e.target.value) || 0)}
+                />
+              </label>
+            </div>
           </div>
         ))}
       </section>

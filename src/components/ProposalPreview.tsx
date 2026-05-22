@@ -45,24 +45,6 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
 
       <h2 className="doc-heading">Your Options</h2>
 
-      {/* Shared pricing banner */}
-      <div className="doc-pricing-banner">
-        <div className="dpb-block">
-          <div className="dpb-amount">{fmt(data.spotonMonthly)}<span className="dpb-period">/mo</span></div>
-          <div className="dpb-label">Proposed Monthly Software</div>
-        </div>
-        <div className="dpb-divider" />
-        <div className="dpb-block">
-          <div className="dpb-amount dpb-current">{fmt(data.currentMonthly)}<span className="dpb-period">/mo</span></div>
-          <div className="dpb-label">Current Monthly Software</div>
-        </div>
-        <div className="dpb-divider" />
-        <div className="dpb-block">
-          <div className="dpb-amount">{fmt(data.hardwarePrice)}</div>
-          <div className="dpb-label">Hardware + Implementation</div>
-        </div>
-      </div>
-
       {/* Cards */}
       {data.plans.length === 0 ? (
         <div className="doc-empty">Add a plan on the left to see your proposal preview.</div>
@@ -97,38 +79,22 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     )}
                   </div>
                 </div>
-              </div>
 
-              {/* Feature table */}
-              {data.features.length > 0 && (
-                <div className="card-features">
-                  <div className="card-features-header">
-                    <span className="cf-name"></span>
-                    <span className="cf-col cf-col-spoton">SpotOn</span>
-                    <span className="cf-col">Current</span>
+                <div className="card-summary">
+                  <div className="card-summary-row">
+                    <span className="cs-label">Proposed Monthly Software</span>
+                    <span className="cs-amount cs-spoton">{fmt(plan.spotonMonthly)}</span>
                   </div>
-                  {data.features.map((f) => {
-                    const pf = plan.features.find((x) => x.featureId === f.id);
-                    const spoton = pf?.spotonIncluded ?? false;
-                    const current = pf?.currentIncluded ?? false;
-                    return (
-                      <div key={f.id} className="cf-row">
-                        <span className="cf-name">{f.name}</span>
-                        <span className="cf-col">
-                          <span className={`cf-icon ${spoton ? 'check' : 'cross'}`}>
-                            {spoton ? '✓' : '✗'}
-                          </span>
-                        </span>
-                        <span className="cf-col">
-                          <span className={`cf-icon ${current ? 'check' : 'cross'}`}>
-                            {current ? '✓' : '✗'}
-                          </span>
-                        </span>
-                      </div>
-                    );
-                  })}
+                  <div className="card-summary-row">
+                    <span className="cs-label">Current Software</span>
+                    <span className="cs-amount cs-current">{fmt(plan.currentMonthly)}</span>
+                  </div>
+                  <div className="card-summary-row cs-hardware-row">
+                    <span className="cs-label">Hardware + Implementation</span>
+                    <span className="cs-amount cs-hardware">{fmt(plan.hardwarePrice)}</span>
+                  </div>
                 </div>
-              )}
+              </div>
 
               {/* Card footer */}
               <div className="card-footer">
@@ -139,6 +105,39 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
           ))}
         </div>
       )}
+
+      {/* Shared feature comparison — shown once below all cards */}
+      {data.features.length > 0 && data.plans.length > 0 && (() => {
+        const ref = data.plans[0];
+        return (
+          <div className="shared-features">
+            <h2 className="doc-heading" style={{ marginTop: 20 }}>What's Included</h2>
+            <div className="shared-feature-table">
+              <div className="sft-header">
+                <span className="sft-name"></span>
+                <span className="sft-col sft-col-spoton">SpotOn</span>
+                <span className="sft-col">Current</span>
+              </div>
+              {data.features.map((f) => {
+                const pf = ref.features.find((x) => x.featureId === f.id);
+                const spoton = pf?.spotonIncluded ?? false;
+                const current = pf?.currentIncluded ?? false;
+                return (
+                  <div key={f.id} className="sft-row">
+                    <span className="sft-name">{f.name}</span>
+                    <span className="sft-col">
+                      <span className={`cf-icon ${spoton ? 'check' : 'cross'}`}>{spoton ? '✓' : '✗'}</span>
+                    </span>
+                    <span className="sft-col">
+                      <span className={`cf-icon ${current ? 'check' : 'cross'}`}>{current ? '✓' : '✗'}</span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 });
