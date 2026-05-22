@@ -1,12 +1,12 @@
 interface Props {
-  /** 'normal' ≈ 120×30px  |  'small' ≈ 86×22px */
-  size?: 'normal' | 'small';
+  /** 'large' ≈ 180×45px  |  'normal' ≈ 120×30px  |  'small' ≈ 86×22px */
+  size?: 'large' | 'normal' | 'small';
   /** 'dark' = near-black (on light bg)  |  'light' = white (on dark bg) */
   variant?: 'dark' | 'light';
 }
 
 export function SpotOnLogo({ size = 'normal', variant = 'dark' }: Props) {
-  const scale = size === 'small' ? 0.72 : 1;
+  const scale = size === 'small' ? 0.72 : size === 'large' ? 1.5 : 1;
   const w = Math.round(120 * scale);
   const h = Math.round(30 * scale);
   const color = variant === 'light' ? '#ffffff' : '#111111';

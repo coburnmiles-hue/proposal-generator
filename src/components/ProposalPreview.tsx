@@ -50,34 +50,53 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
         </div>
       )}
 
-      {/* What's Included */}
+      {/* What's Included + Logo Stack */}
       {data.features.length > 0 && data.plans.length > 0 && (() => {
         const ref = data.plans[0];
         return (
-          <div className="shared-features">
-            <h2 className="doc-heading">What's Included</h2>
-            <div className="shared-feature-table">
-              <div className="sft-header">
-                <span className="sft-name"></span>
-                <span className="sft-col sft-col-spoton">SpotOn</span>
-                <span className="sft-col">Current</span>
+          <div className="features-area">
+            {/* Table */}
+            <div className="shared-features">
+              <h2 className="doc-heading">What's Included</h2>
+              <div className="shared-feature-table">
+                <div className="sft-header">
+                  <span className="sft-name"></span>
+                  <span className="sft-col sft-col-spoton">SpotOn</span>
+                  <span className="sft-col">Current</span>
+                </div>
+                {data.features.map((f) => {
+                  const pf = ref.features.find((x) => x.featureId === f.id);
+                  const spoton = pf?.spotonIncluded ?? false;
+                  const current = pf?.currentIncluded ?? false;
+                  return (
+                    <div key={f.id} className="sft-row">
+                      <span className="sft-name">{f.name}</span>
+                      <span className="sft-col">
+                        <span className={`cf-icon ${spoton ? 'check' : 'cross'}`}>{spoton ? '✓' : '✗'}</span>
+                      </span>
+                      <span className="sft-col">
+                        <span className={`cf-icon ${current ? 'check' : 'cross'}`}>{current ? '✓' : '✗'}</span>
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-              {data.features.map((f) => {
-                const pf = ref.features.find((x) => x.featureId === f.id);
-                const spoton = pf?.spotonIncluded ?? false;
-                const current = pf?.currentIncluded ?? false;
-                return (
-                  <div key={f.id} className="sft-row">
-                    <span className="sft-name">{f.name}</span>
-                    <span className="sft-col">
-                      <span className={`cf-icon ${spoton ? 'check' : 'cross'}`}>{spoton ? '✓' : '✗'}</span>
-                    </span>
-                    <span className="sft-col">
-                      <span className={`cf-icon ${current ? 'check' : 'cross'}`}>{current ? '✓' : '✗'}</span>
-                    </span>
-                  </div>
-                );
-              })}
+            </div>
+
+            {/* Logo stack */}
+            <div className="features-logo-stack">
+              <SpotOnLogo size="large" variant="dark" />
+              <svg className="fls-x" width="20" height="20" viewBox="0 0 16 16" aria-hidden="true">
+                <line x1="2" y1="2" x2="14" y2="14" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="14" y1="2" x2="2" y2="14" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              {data.clientLogoUrl ? (
+                <img src={data.clientLogoUrl} alt={data.clientCompany || 'Client'} className="fls-client-logo" />
+              ) : (
+                <div className="fls-placeholder">
+                  {data.clientCompany || 'Client Logo'}
+                </div>
+              )}
             </div>
           </div>
         );

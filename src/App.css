@@ -876,7 +876,47 @@ textarea { resize: vertical; }
 }
 
 /* ===== Shared feature table (below cards) ===== */
-.shared-features { margin-top: 24px; margin-bottom: 28px; max-width: calc((200% - 14px) / 3); }
+.features-area {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+  margin-top: 24px;
+  margin-bottom: 28px;
+  align-items: start;
+}
+
+.shared-features { }
+
+.features-logo-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 28px 20px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  min-height: 100%;
+}
+
+.fls-x {
+  stroke: var(--text-light);
+  flex-shrink: 0;
+}
+
+.fls-client-logo {
+  max-width: 140px;
+  max-height: 64px;
+  object-fit: contain;
+}
+
+.fls-placeholder {
+  font-size: 13px;
+  color: var(--text-light);
+  text-align: center;
+  font-style: italic;
+}
 
 .shared-feature-table {
   border: 1px solid var(--border);
