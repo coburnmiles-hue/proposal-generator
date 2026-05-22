@@ -876,7 +876,7 @@ textarea { resize: vertical; }
 }
 
 /* ===== Shared feature table (below cards) ===== */
-.shared-features { margin-top: 24px; margin-bottom: 28px; }
+.shared-features { margin-top: 24px; margin-bottom: 28px; max-width: calc((200% - 14px) / 3); }
 
 .shared-feature-table {
   border: 1px solid var(--border);
