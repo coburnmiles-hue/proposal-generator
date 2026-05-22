@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { Feature, Plan, PlanFeature, ProposalData } from '../types';
+import type { Feature, Plan, PlanFeature, PlanRate, ProposalData } from '../types';
 
 interface Props {
   data: ProposalData;
@@ -42,6 +42,13 @@ export function ProposalForm({ data, onChange }: Props) {
       id: uuidv4(),
       name: `Option ${data.plans.length + 1}`,
       description: '',
+      rate: {
+        type: 'interchange+',
+        basisPoints: 0, interchangePerTx: 0,
+        flatPercentage: 0, flatPerTx: 0,
+        vmcPercentage: 0, vmcPerTx: 0,
+        amexPercentage: 0, amexPerTx: 0,
+      },
       spotonMonthly: 0,
       currentMonthly: 0,
       hardwarePrice: 0,
@@ -196,6 +203,84 @@ export function ProposalForm({ data, onChange }: Props) {
                 placeholder="Sentence about this plan..."
               />
             </label>
+
+            {/* Processing Rate */}
+            <div className="rate-section">
+              <label className="rate-type-label">
+                Processing Rate
+                <select
+                  value={plan.rate.type}
+                  onChange={(e) =>
+                    updatePlan(plan.id, 'rate', { ...plan.rate, type: e.target.value as PlanRate['type'] })
+                  }
+                >
+                  <option value="interchange+">Interchange+</option>
+                  <option value="flat">Flat</option>
+                  <option value="tiered">Tiered</option>
+                </select>
+              </label>
+
+              {plan.rate.type === 'interchange+' && (
+                <div className="field-group">
+                  <label>
+                    Basis Points
+                    <input type="number" min={0} value={plan.rate.basisPoints}
+                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, basisPoints: parseFloat(e.target.value) || 0 })} />
+                  </label>
+                  <label>
+                    Per Transaction ($)
+                    <input type="number" min={0} step={0.01} value={plan.rate.interchangePerTx}
+                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, interchangePerTx: parseFloat(e.target.value) || 0 })} />
+                  </label>
+                </div>
+              )}
+
+              {plan.rate.type === 'flat' && (
+                <div className="field-group">
+                  <label>
+                    Percentage (%)
+                    <input type="number" min={0} step={0.01} value={plan.rate.flatPercentage}
+                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: parseFloat(e.target.value) || 0 })} />
+                  </label>
+                  <label>
+                    Per Transaction ($)
+                    <input type="number" min={0} step={0.01} value={plan.rate.flatPerTx}
+                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: parseFloat(e.target.value) || 0 })} />
+                  </label>
+                </div>
+              )}
+
+              {plan.rate.type === 'tiered' && (
+                <>
+                  <div className="rate-group-label">Visa / MC / Discover</div>
+                  <div className="field-group">
+                    <label>
+                      Rate (%)
+                      <input type="number" min={0} step={0.01} value={plan.rate.vmcPercentage}
+                        onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcPercentage: parseFloat(e.target.value) || 0 })} />
+                    </label>
+                    <label>
+                      Per Transaction ($)
+                      <input type="number" min={0} step={0.01} value={plan.rate.vmcPerTx}
+                        onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcPerTx: parseFloat(e.target.value) || 0 })} />
+                    </label>
+                  </div>
+                  <div className="rate-group-label">AMEX</div>
+                  <div className="field-group">
+                    <label>
+                      Rate (%)
+                      <input type="number" min={0} step={0.01} value={plan.rate.amexPercentage}
+                        onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPercentage: parseFloat(e.target.value) || 0 })} />
+                    </label>
+                    <label>
+                      Per Transaction ($)
+                      <input type="number" min={0} step={0.01} value={plan.rate.amexPerTx}
+                        onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPerTx: parseFloat(e.target.value) || 0 })} />
+                    </label>
+                  </div>
+                </>
+              )}
+            </div>
 
             <div className="field-group">
               <label>

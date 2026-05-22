@@ -22,10 +22,23 @@ const DEFAULT_FEATURES = [
   { id: uuidv4(), name: 'Success Agent' },
 ];
 
+const DEFAULT_RATE = {
+  type: 'interchange+' as const,
+  basisPoints: 0,
+  interchangePerTx: 0,
+  flatPercentage: 0,
+  flatPerTx: 0,
+  vmcPercentage: 0,
+  vmcPerTx: 0,
+  amexPercentage: 0,
+  amexPerTx: 0,
+};
+
 const makeDefaultPlan = (name: string, features: typeof DEFAULT_FEATURES) => ({
   id: uuidv4(),
   name,
   description: '',
+  rate: DEFAULT_RATE,
   spotonMonthly: 0,
   currentMonthly: 0,
   hardwarePrice: 0,

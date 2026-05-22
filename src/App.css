@@ -1,21 +1,22 @@
 /* ===== Design Tokens ===== */
 :root {
-  --brand:       #e8194b;   /* SpotOn red */
-  --brand-dark:  #c0153d;
-  --navy:        #0f1e3d;   /* deep navy */
-  --navy-mid:    #1b2f5e;
-  --card-bg:     #eef1f8;   /* soft blue-grey card header */
-  --card-accent: #dde3f2;
-  --text-dark:   #0f1e3d;
-  --text-mid:    #4a5568;
-  --text-light:  #718096;
-  --border:      #dde3f2;
-  --white:       #ffffff;
-  --check-bg:    #e8f5e9;
-  --check-fg:    #2e7d32;
-  --cross-bg:    #fde8ee;
-  --cross-fg:    #c0153d;
-  --page-bg:     #f0f2f8;
+  --brand:        #e8194b;   /* SpotOn red */
+  --brand-dark:   #c0153d;
+  --spoton-blue:  #1055C8;   /* SpotOn classic blue */
+  --navy:         #0f1e3d;   /* deep navy */
+  --navy-mid:     #1b2f5e;
+  --card-bg:      #eef1f8;   /* soft blue-grey card header */
+  --card-accent:  #dde3f2;
+  --text-dark:    #0f1e3d;
+  --text-mid:     #4a5568;
+  --text-light:   #718096;
+  --border:       #dde3f2;
+  --white:        #ffffff;
+  --check-bg:     #e8f5e9;
+  --check-fg:     #2e7d32;
+  --cross-bg:     #fde8ee;
+  --cross-fg:     #c0153d;
+  --page-bg:      #f0f2f8;
 }
 
 /* ===== Reset / Base ===== */
@@ -410,8 +411,83 @@ textarea { resize: vertical; }
   border: 1px solid var(--border);
 }
 
-/* ── Per-card colour themes ──────────────────────────────────────
-   theme-0  Basic    : dark steel    #37474f / light bg #eceff1
+/* Rate display in card */
+.card-rate {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.card-rate-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--white);
+  background: var(--accent);
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+
+.card-rate-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-mid);
+  line-height: 1.4;
+}
+
+/* Rate section in form */
+.rate-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: #f8f9fc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.rate-type-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-mid);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rate-section select {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dark);
+  background: var(--white);
+  cursor: pointer;
+}
+
+.rate-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+/* ── Per-card colour themes ──────────────────────────────────────   theme-0  Basic    : dark steel    #37474f / light bg #eceff1
    theme-1  Advanced : emerald green #059669 / light bg #e6f7f1
    theme-2  Core     : deep violet   #4f46e5 / light bg #eeedfb
 ──────────────────────────────────────────────────────────────── */
@@ -532,6 +608,7 @@ textarea { resize: vertical; }
 
 .cf-name { font-size: 12px; color: var(--text-dark); }
 .cf-col { text-align: center; }
+.cf-col-spoton { color: var(--spoton-blue); font-weight: 800; }
 
 .cf-icon {
   display: inline-flex;

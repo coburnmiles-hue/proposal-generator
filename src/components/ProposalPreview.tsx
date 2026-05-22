@@ -57,6 +57,29 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                 {plan.name && <div className="card-plan-name">{plan.name}</div>}
                 {plan.description && <p className="card-desc">{plan.description}</p>}
 
+                {/* Processing rate */}
+                <div className="card-rate">
+                  <span className="card-rate-badge">
+                    {plan.rate.type === 'interchange+' ? 'Interchange+'
+                      : plan.rate.type === 'flat' ? 'Flat Rate'
+                      : 'Tiered'}
+                  </span>
+                  <div className="card-rate-details">
+                    {plan.rate.type === 'interchange+' && (
+                      <span>{plan.rate.basisPoints} bps + ${plan.rate.interchangePerTx.toFixed(2)}/tx</span>
+                    )}
+                    {plan.rate.type === 'flat' && (
+                      <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}/tx</span>
+                    )}
+                    {plan.rate.type === 'tiered' && (
+                      <>
+                        <span>Visa/MC/Disc: {plan.rate.vmcPercentage.toFixed(2)}% + ${plan.rate.vmcPerTx.toFixed(2)}/tx</span>
+                        <span>AMEX: {plan.rate.amexPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}/tx</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
                 <div className="card-summary">
                   <div className="card-summary-row">
                     <span className="cs-label">Proposed Monthly Software</span>
@@ -78,13 +101,8 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                 <div className="card-features">
                   <div className="card-features-header">
                     <span className="cf-name"></span>
-                    <span className="cf-col">
-                      <span className="cf-col-dot spoton-dot" />SpotOn
-                    </span>
-                    <span className="cf-col">
-                      <span className="cf-col-dot current-dot" />
-                      Current
-                    </span>
+                    <span className="cf-col cf-col-spoton">SpotOn</span>
+                    <span className="cf-col">Current</span>
                   </div>
                   {data.features.map((f) => {
                     const pf = plan.features.find((x) => x.featureId === f.id);
