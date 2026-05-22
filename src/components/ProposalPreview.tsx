@@ -27,7 +27,10 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
           <SpotOnLogo size="normal" variant="dark" />
           {data.clientLogoUrl && (
             <>
-              <span className="doc-logo-x">×</span>
+              <svg className="doc-logo-x" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                <line x1="1" y1="1" x2="11" y2="11" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="11" y1="1" x2="1" y2="11" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
               <img
                 src={data.clientLogoUrl}
                 alt={data.clientCompany || 'Client'}
