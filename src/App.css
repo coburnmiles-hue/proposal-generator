@@ -353,6 +353,9 @@ textarea { resize: vertical; }
   color: var(--text-light);
   line-height: 1;
   user-select: none;
+  display: flex;
+  align-items: center;
+  align-self: center;
 }
 
 .doc-client-logo {

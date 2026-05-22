@@ -43,7 +43,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
         </div>
       </div>
 
-      <h2 className="doc-heading">Your Options</h2>
+
 
       {/* Cards */}
       {data.plans.length === 0 ? (
