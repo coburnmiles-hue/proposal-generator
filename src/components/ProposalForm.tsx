@@ -70,22 +70,6 @@ export function ProposalForm({ data, onChange }: Props) {
     set('plans', data.plans.map((p) => (p.id === planId ? { ...p, [field]: value } : p)));
   };
 
-  const toggleFeature = (planId: string, featureId: string, col: 'spotonIncluded' | 'currentIncluded') => {
-    set(
-      'plans',
-      data.plans.map((p) =>
-        p.id !== planId
-          ? p
-          : {
-              ...p,
-              features: p.features.map((pf) =>
-                pf.featureId === featureId ? { ...pf, [col]: !pf[col] } : pf
-              ),
-            }
-      )
-    );
-  };
-
   // Toggle a feature across ALL plans simultaneously (shared comparison table)
   const toggleSharedFeature = (featureId: string, col: 'spotonIncluded' | 'currentIncluded') => {
     const ref = data.plans[0];
