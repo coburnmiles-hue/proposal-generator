@@ -44,26 +44,19 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                 {plan.name && <div className="card-plan-name">{plan.name}</div>}
                 {plan.description && <p className="card-desc">{plan.description}</p>}
 
-                <div className="card-pricing">
-                  <div className="card-price-row">
-                    <div className="card-price-block">
-                      <div className="card-price-amount">{fmt(plan.spotonMonthly)}</div>
-                      <div className="card-price-label">Monthly Software</div>
-                    </div>
-                    {plan.currentMonthly > 0 && (
-                      <div className="card-price-block card-price-current">
-                        <div className="card-price-amount current">{fmt(plan.currentMonthly)}</div>
-                        <div className="card-price-label current">Current Monthly<br />Software</div>
-                      </div>
-                    )}
+                <div className="card-summary">
+                  <div className="card-summary-row">
+                    <span className="cs-label">Proposed Monthly Software</span>
+                    <span className="cs-amount cs-spoton">{fmt(plan.spotonMonthly)}</span>
                   </div>
-
-                  {plan.hardwarePrice > 0 && (
-                    <div className="card-hardware-row">
-                      <div className="card-price-amount hardware">{fmt(plan.hardwarePrice)}</div>
-                      <div className="card-price-label hardware">Hardware + Implementation</div>
-                    </div>
-                  )}
+                  <div className="card-summary-row">
+                    <span className="cs-label">Current Software</span>
+                    <span className="cs-amount cs-current">{fmt(plan.currentMonthly)}</span>
+                  </div>
+                  <div className="card-summary-row cs-hardware-row">
+                    <span className="cs-label">Hardware + Implementation</span>
+                    <span className="cs-amount cs-hardware">{fmt(plan.hardwarePrice)}</span>
+                  </div>
                 </div>
               </div>
 
