@@ -1,5 +1,5 @@
 interface Props {
-  /** 'normal' ≈ 165×30px  |  'small' ≈ 119×22px */
+  /** 'normal' ≈ 120×30px  |  'small' ≈ 86×22px */
   size?: 'normal' | 'small';
   /** 'dark' = near-black (on light bg)  |  'light' = white (on dark bg) */
   variant?: 'dark' | 'light';
@@ -7,13 +7,13 @@ interface Props {
 
 export function SpotOnLogo({ size = 'normal', variant = 'dark' }: Props) {
   const scale = size === 'small' ? 0.72 : 1;
-  const w = Math.round(165 * scale);
+  const w = Math.round(120 * scale);
   const h = Math.round(30 * scale);
   const color = variant === 'light' ? '#ffffff' : '#111111';
 
   return (
     <svg
-      viewBox="0 0 165 30"
+      viewBox="0 0 120 30"
       width={w}
       height={h}
       role="img"

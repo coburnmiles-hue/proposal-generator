@@ -351,11 +351,12 @@ textarea { resize: vertical; }
 .doc-logos {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 20px;
 }
 
 .doc-logo-x {
   flex-shrink: 0;
+  display: block;
   align-self: center;
   stroke: var(--text-light);
 }
@@ -686,7 +687,7 @@ textarea { resize: vertical; }
 }
 
 /* ===== Shared feature table (below cards) ===== */
-.shared-features { margin-bottom: 28px; }
+.shared-features { margin-top: 24px; margin-bottom: 28px; }
 
 .shared-feature-table {
   border: 1px solid var(--border);
