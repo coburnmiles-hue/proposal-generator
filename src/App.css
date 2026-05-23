@@ -690,7 +690,7 @@ textarea { resize: vertical; }
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: var(--brand);
+  color: var(--spoton-blue);
   margin: 0 0 6px;
 }
 .doc-intro-name {

@@ -21,7 +21,6 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
           Better <strong>together</strong><span className="bt-dot">.</span>
         </div>
         <div className="doc-page-meta">
-          {data.clientCompany && <span>{data.clientCompany}</span>}
           {data.clientName && <span>{data.clientName}</span>}
         </div>
       </div>
