@@ -125,7 +125,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
 
                 <div className="card-summary">
                   <div className="card-summary-row">
-                    <span className="cs-label">Proposed Monthly Software</span>
+                    <span className="cs-label">Monthly Software</span>
                     <span className="cs-amount cs-spoton">{fmt(plan.spotonMonthly)}</span>
                   </div>
                   <div className="card-summary-row">
