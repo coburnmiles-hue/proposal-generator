@@ -63,7 +63,6 @@ const makeDefaultPlan = (name: string, features: typeof DEFAULT_FEATURES) => ({
   description: '',
   rate: DEFAULT_RATE,
   spotonMonthly: 0,
-  currentMonthly: 0,
   hardwarePrice: 0,
   features: features.map((f) => ({ featureId: f.id, spotonIncluded: false, currentIncluded: false })),
 });
@@ -74,6 +73,7 @@ const defaultData: ProposalData = {
   clientLogoUrl: '',
   date: new Date().toISOString().split('T')[0],
   companyName: 'SpotOn',
+  currentMonthly: 0,
   currentProcessing: 0,
   spotonProcessing: 0,
   features: DEFAULT_FEATURES,

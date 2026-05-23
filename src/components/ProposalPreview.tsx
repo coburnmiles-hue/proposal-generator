@@ -130,7 +130,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   </div>
                   <div className="card-summary-row">
                     <span className="cs-label">Current Software</span>
-                    <span className="cs-amount cs-current">{fmt(plan.currentMonthly)}</span>
+                    <span className="cs-amount cs-current">{fmt(data.currentMonthly)}</span>
                   </div>
                   <div className="card-summary-row cs-hardware-row">
                     <span className="cs-label">Hardware + Implementation</span>
@@ -144,7 +144,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                 <div className="card-footer-label">Savings</div>
                 <div className="card-footer-savings">
                   {(() => {
-                    const monthly = (plan.currentMonthly - plan.spotonMonthly) + (data.currentProcessing - data.spotonProcessing);
+                    const monthly = (data.currentMonthly - plan.spotonMonthly) + (data.currentProcessing - data.spotonProcessing);
                     return (
                       <>
                         <div className="card-footer-savings-item">
