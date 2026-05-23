@@ -35,7 +35,7 @@ export interface Plan {
   spotonMonthly: number;
   currentMonthly: number;
   hardwarePrice: number;
-  totalInvestment: number;
+  monthlySavings: number;
   features: PlanFeature[];
 }
 

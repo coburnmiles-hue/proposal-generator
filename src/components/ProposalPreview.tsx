@@ -142,8 +142,17 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
 
               {/* Card footer */}
               <div className="card-footer">
-                <div className="card-footer-label">Total Savings</div>
-                <div className="card-footer-amount">{fmt(plan.totalInvestment)}</div>
+                <div className="card-footer-label">Savings</div>
+                <div className="card-footer-savings">
+                  <div className="card-footer-savings-item">
+                    <span className="savings-period">Monthly</span>
+                    <span className="savings-amount">{fmt(plan.monthlySavings)}</span>
+                  </div>
+                  <div className="card-footer-savings-item">
+                    <span className="savings-period">Yearly</span>
+                    <span className="savings-amount">{fmt(plan.monthlySavings * 12)}</span>
+                  </div>
+                </div>
               </div>
             </div>
           ))}

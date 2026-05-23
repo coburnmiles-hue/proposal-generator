@@ -66,7 +66,7 @@ export function ProposalForm({ data, onChange }: Props) {
       spotonMonthly: 0,
       currentMonthly: 0,
       hardwarePrice: 0,
-      totalInvestment: 0,
+      monthlySavings: 0,
       features: data.features.map((f) => ({
         featureId: f.id,
         spotonIncluded: false,
@@ -364,12 +364,12 @@ export function ProposalForm({ data, onChange }: Props) {
                 />
               </label>
               <label>
-                Total Savings ($)
+                Monthly Savings ($)
                 <input
                   type="number"
                   min={0}
-                  value={plan.totalInvestment}
-                  onChange={(e) => updatePlan(plan.id, 'totalInvestment', parseFloat(e.target.value) || 0)}
+                  value={plan.monthlySavings}
+                  onChange={(e) => updatePlan(plan.id, 'monthlySavings', parseFloat(e.target.value) || 0)}
                 />
               </label>
             </div>
