@@ -574,7 +574,9 @@ textarea { resize: vertical; }
 .preview-panel {
   overflow-y: auto;
   padding: 32px 24px;
-  background: var(--page-bg);
+  background-color: var(--page-bg);
+  background-image: radial-gradient(circle, rgba(15,30,61,0.07) 1px, transparent 1px);
+  background-size: 20px 20px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -604,7 +606,7 @@ textarea { resize: vertical; }
 
 /* Logo pair: SpotOn × Client */
 .better-together {
-  background: var(--navy);
+  background: linear-gradient(120deg, #0f1e3d 0%, #1a3a6e 100%);
   color: #ffffff;
   font-size: 30px;
   font-weight: 300;
@@ -663,15 +665,6 @@ textarea { resize: vertical; }
   color: var(--text-dark);
 }
 
-.doc-heading {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-light);
-  margin: 0 0 14px;
-}
-
 .doc-empty {
   text-align: center;
   color: var(--text-light);
@@ -723,10 +716,22 @@ textarea { resize: vertical; }
   flex-direction: column;
   border-radius: 16px;
   overflow: hidden;
+  position: relative;
   box-shadow: 0 8px 32px rgba(15,30,61,0.18), 0 2px 6px rgba(15,30,61,0.08);
   border: 1px solid var(--border);
-  border-top: 5px solid var(--accent);
+  border-top: none;
 }
+.plan-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  z-index: 1;
+}
+.plan-card:not(.theme-0):not(.theme-1):not(.theme-2)::before { background: linear-gradient(90deg, #0f1e3d, #1055C8); }
+.plan-card.theme-0::before { background: linear-gradient(90deg, #37474f, #78909c); }
+.plan-card.theme-1::before { background: linear-gradient(90deg, #059669, #34d399); }
+.plan-card.theme-2::before { background: linear-gradient(90deg, #4f46e5, #818cf8); }
 
 /* Rate display in card */
 .card-rate {
@@ -816,7 +821,7 @@ textarea { resize: vertical; }
 
 /* Card top */
 .card-top {
-  background: var(--accent-bg);
+  background: linear-gradient(160deg, var(--accent-bg) 0%, #ffffff 100%);
   padding: 20px 18px 16px;
   border-bottom: 2px solid var(--border);
 }
@@ -938,12 +943,16 @@ textarea { resize: vertical; }
 
 /* Card footer */
 .card-footer {
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 70%, #000) 100%);
   padding: 14px 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+.plan-card.theme-0 .card-footer { background: linear-gradient(135deg, #37474f 0%, #1c252a 100%); }
+.plan-card.theme-1 .card-footer { background: linear-gradient(135deg, #059669 0%, #065f46 100%); }
+.plan-card.theme-2 .card-footer { background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%); }
+.plan-card:not(.theme-0):not(.theme-1):not(.theme-2) .card-footer { background: linear-gradient(135deg, #0f1e3d 0%, #060e1e 100%); }
 
 .card-footer-label {
   font-size: 10px;
@@ -990,7 +999,18 @@ textarea { resize: vertical; }
   align-items: start;
 }
 
-.shared-features { }
+.shared-features {}
+
+.doc-heading {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-light);
+  margin: 0 0 14px;
+  padding-left: 10px;
+  border-left: 3px solid var(--spoton-blue);
+}
 
 .features-logo-stack {
   display: flex;
@@ -1049,7 +1069,7 @@ textarea { resize: vertical; }
   align-items: center;
 }
 .sft-row:last-child { border-bottom: none; }
-.sft-row:nth-child(even) { background: #f8f9fc; }
+.sft-row:nth-child(even) { background: #f2f4f9; }
 
 .sft-name { font-size: 13px; color: var(--text-dark); }
 .sft-col  { text-align: center; }
