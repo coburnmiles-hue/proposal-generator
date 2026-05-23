@@ -309,6 +309,7 @@ export function ProposalForm({ data, onChange }: Props) {
                 >
                   <option value="interchange+">Interchange+</option>
                   <option value="flat">Flat</option>
+                  <option value="dual-pricing">Dual Pricing</option>
                   <option value="tiered">Tiered</option>
                 </select>
               </label>
@@ -329,6 +330,21 @@ export function ProposalForm({ data, onChange }: Props) {
               )}
 
               {plan.rate.type === 'flat' && (
+                <div className="field-group">
+                  <label>
+                    Percentage (%)
+                    <input type="number" min={0} step={0.01} value={plan.rate.flatPercentage || ''}
+                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: parseFloat(e.target.value) || 0 })} />
+                  </label>
+                  <label>
+                    Per Transaction ($)
+                    <input type="number" min={0} step={0.01} value={plan.rate.flatPerTx || ''}
+                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: parseFloat(e.target.value) || 0 })} />
+                  </label>
+                </div>
+              )}
+
+              {plan.rate.type === 'dual-pricing' && (
                 <div className="field-group">
                   <label>
                     Percentage (%)

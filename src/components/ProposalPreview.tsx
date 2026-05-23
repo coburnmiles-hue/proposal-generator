@@ -105,6 +105,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   <span className="card-rate-badge">
                     {plan.rate.type === 'interchange+' ? 'Interchange+'
                       : plan.rate.type === 'flat' ? 'Flat Rate'
+                      : plan.rate.type === 'dual-pricing' ? 'Dual Pricing'
                       : 'Tiered'}
                   </span>
                   <div className="card-rate-details">
@@ -112,6 +113,9 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                       <span>{plan.rate.basisPoints} bps + ${plan.rate.interchangePerTx.toFixed(2)}</span>
                     )}
                     {plan.rate.type === 'flat' && (
+                      <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}</span>
+                    )}
+                    {plan.rate.type === 'dual-pricing' && (
                       <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}</span>
                     )}
                     {plan.rate.type === 'tiered' && (

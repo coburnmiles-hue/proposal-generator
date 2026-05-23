@@ -10,7 +10,7 @@ export interface PlanFeature {
   currentIncluded: boolean;
 }
 
-export type RateType = 'interchange+' | 'flat' | 'tiered';
+export type RateType = 'interchange+' | 'flat' | 'dual-pricing' | 'tiered';
 
 export interface PlanRate {
   type: RateType;
