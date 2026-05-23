@@ -109,15 +109,15 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   </span>
                   <div className="card-rate-details">
                     {plan.rate.type === 'interchange+' && (
-                      <span>{plan.rate.basisPoints} bps + ${plan.rate.interchangePerTx.toFixed(2)}/tx</span>
+                      <span>{plan.rate.basisPoints} bps + ${plan.rate.interchangePerTx.toFixed(2)}</span>
                     )}
                     {plan.rate.type === 'flat' && (
-                      <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}/tx</span>
+                      <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}</span>
                     )}
                     {plan.rate.type === 'tiered' && (
                       <>
-                        <span>Visa/MC/Disc: {plan.rate.vmcPercentage.toFixed(2)}% + ${plan.rate.vmcPerTx.toFixed(2)}/tx</span>
-                        <span>AMEX: {plan.rate.amexPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}/tx</span>
+                        <span>Visa/MC/Disc: {plan.rate.vmcPercentage.toFixed(2)}% + ${plan.rate.vmcPerTx.toFixed(2)}</span>
+                        <span>AMEX: {plan.rate.amexPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}</span>
                       </>
                     )}
                   </div>
