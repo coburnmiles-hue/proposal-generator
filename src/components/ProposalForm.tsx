@@ -1,6 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import type { Plan, PlanFeature, PlanRate, ProposalData } from '../types';
+
+/** Controlled numeric input that allows typing values like 0.05 without swallowing zeros */
+function NumericInput({ value, onChange, ...props }: {
+  value: number;
+  onChange: (val: number) => void;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'>) {
+  const [raw, setRaw] = useState(value === 0 ? '' : String(value));
+
+  useEffect(() => {
+    const parsed = parseFloat(raw);
+    if (isNaN(parsed) ? value !== 0 : parsed !== value) {
+      setRaw(value === 0 ? '' : String(value));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
+  return (
+    <input
+      type="text"
+      inputMode="decimal"
+      value={raw}
+      onChange={(e) => {
+        const s = e.target.value;
+        if (s === '' || /^\d*\.?\d*$/.test(s)) {
+          setRaw(s);
+          onChange(s === '' || s === '.' ? 0 : parseFloat(s) || 0);
+        }
+      }}
+      {...props}
+    />
+  );
+}
 
 interface Props {
   data: ProposalData;
@@ -230,32 +262,17 @@ export function ProposalForm({ data, onChange }: Props) {
         <div className="field-group">
           <label>
             Current Monthly Software ($)
-            <input
-              type="number"
-              min={0}
-              value={data.currentMonthly || ''}
-              onChange={(e) => set('currentMonthly', parseFloat(e.target.value) || 0)}
-            />
+            <NumericInput value={data.currentMonthly} onChange={(val) => set('currentMonthly', val)} min={0} />
           </label>
         </div>
         <div className="field-group">
           <label>
             Current Monthly Processing ($)
-            <input
-              type="number"
-              min={0}
-              value={data.currentProcessing || ''}
-              onChange={(e) => set('currentProcessing', parseFloat(e.target.value) || 0)}
-            />
+            <NumericInput value={data.currentProcessing} onChange={(val) => set('currentProcessing', val)} min={0} />
           </label>
           <label>
             SpotOn Monthly Processing ($)
-            <input
-              type="number"
-              min={0}
-              value={data.spotonProcessing || ''}
-              onChange={(e) => set('spotonProcessing', parseFloat(e.target.value) || 0)}
-            />
+            <NumericInput value={data.spotonProcessing} onChange={(val) => set('spotonProcessing', val)} min={0} />
           </label>
         </div>
         <div className="calc-result">
@@ -318,13 +335,11 @@ export function ProposalForm({ data, onChange }: Props) {
                 <div className="field-group">
                   <label>
                     Basis Points
-                    <input type="number" min={0} value={plan.rate.basisPoints || ''}
-                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, basisPoints: parseFloat(e.target.value) || 0 })} />
+                    <NumericInput value={plan.rate.basisPoints} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, basisPoints: val })} min={0} />
                   </label>
                   <label>
                     Per Transaction ($)
-                    <input type="number" min={0} step={0.01} value={plan.rate.interchangePerTx || ''}
-                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, interchangePerTx: parseFloat(e.target.value) || 0 })} />
+                    <NumericInput value={plan.rate.interchangePerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, interchangePerTx: val })} min={0} />
                   </label>
                 </div>
               )}
@@ -333,13 +348,11 @@ export function ProposalForm({ data, onChange }: Props) {
                 <div className="field-group">
                   <label>
                     Percentage (%)
-                    <input type="number" min={0} step={0.01} value={plan.rate.flatPercentage || ''}
-                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: parseFloat(e.target.value) || 0 })} />
+                    <NumericInput value={plan.rate.flatPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: val })} min={0} />
                   </label>
                   <label>
                     Per Transaction ($)
-                    <input type="number" min={0} step={0.01} value={plan.rate.flatPerTx || ''}
-                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: parseFloat(e.target.value) || 0 })} />
+                    <NumericInput value={plan.rate.flatPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: val })} min={0} />
                   </label>
                 </div>
               )}
@@ -348,13 +361,11 @@ export function ProposalForm({ data, onChange }: Props) {
                 <div className="field-group">
                   <label>
                     Percentage (%)
-                    <input type="number" min={0} step={0.01} value={plan.rate.flatPercentage || ''}
-                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: parseFloat(e.target.value) || 0 })} />
+                    <NumericInput value={plan.rate.flatPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: val })} min={0} />
                   </label>
                   <label>
                     Per Transaction ($)
-                    <input type="number" min={0} step={0.01} value={plan.rate.flatPerTx || ''}
-                      onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: parseFloat(e.target.value) || 0 })} />
+                    <NumericInput value={plan.rate.flatPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: val })} min={0} />
                   </label>
                 </div>
               )}
@@ -365,26 +376,22 @@ export function ProposalForm({ data, onChange }: Props) {
                   <div className="field-group">
                     <label>
                       Rate (%)
-                      <input type="number" min={0} step={0.01} value={plan.rate.vmcPercentage || ''}
-                        onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcPercentage: parseFloat(e.target.value) || 0 })} />
+                      <NumericInput value={plan.rate.vmcPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcPercentage: val })} min={0} />
                     </label>
                     <label>
                       Per Transaction ($)
-                      <input type="number" min={0} step={0.01} value={plan.rate.vmcPerTx || ''}
-                        onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcPerTx: parseFloat(e.target.value) || 0 })} />
+                      <NumericInput value={plan.rate.vmcPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcPerTx: val })} min={0} />
                     </label>
                   </div>
                   <div className="rate-group-label">AMEX</div>
                   <div className="field-group">
                     <label>
                       Rate (%)
-                      <input type="number" min={0} step={0.01} value={plan.rate.amexPercentage || ''}
-                        onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPercentage: parseFloat(e.target.value) || 0 })} />
+                      <NumericInput value={plan.rate.amexPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPercentage: val })} min={0} />
                     </label>
                     <label>
                       Per Transaction ($)
-                      <input type="number" min={0} step={0.01} value={plan.rate.amexPerTx || ''}
-                        onChange={(e) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPerTx: parseFloat(e.target.value) || 0 })} />
+                      <NumericInput value={plan.rate.amexPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPerTx: val })} min={0} />
                     </label>
                   </div>
                 </>
@@ -394,24 +401,14 @@ export function ProposalForm({ data, onChange }: Props) {
             <div className="field-group">
               <label>
                 {data.companyName || 'SpotOn'} Monthly ($)
-                <input
-                  type="number"
-                  min={0}
-                  value={plan.spotonMonthly || ''}
-                  onChange={(e) => updatePlan(plan.id, 'spotonMonthly', parseFloat(e.target.value) || 0)}
-                />
+                <NumericInput value={plan.spotonMonthly} onChange={(val) => updatePlan(plan.id, 'spotonMonthly', val)} min={0} />
               </label>
             </div>
 
             <div className="field-group">
               <label>
                 Hardware + Implementation ($)
-                <input
-                  type="number"
-                  min={0}
-                  value={plan.hardwarePrice || ''}
-                  onChange={(e) => updatePlan(plan.id, 'hardwarePrice', parseFloat(e.target.value) || 0)}
-                />
+                <NumericInput value={plan.hardwarePrice} onChange={(val) => updatePlan(plan.id, 'hardwarePrice', val)} min={0} />
               </label>
               <label className="calc-readonly-label">
                 Total Monthly Savings
