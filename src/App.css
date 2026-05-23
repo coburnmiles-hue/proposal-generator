@@ -308,6 +308,57 @@ body {
   margin: -4px 0 0;
 }
 
+/* Processing Calculator */
+.calc-section {
+  border-color: var(--spoton-blue);
+  background: linear-gradient(135deg, #eef3ff 0%, #f8f9fc 100%);
+}
+
+.calc-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.calc-result-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-mid);
+}
+
+.calc-result-value {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.calc-result-value.positive { color: #059669; }
+.calc-result-value.negative { color: var(--brand); }
+
+.calc-readonly-label {
+  cursor: default;
+}
+
+.calc-readonly-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #059669;
+  letter-spacing: -0.4px;
+  padding: 6px 0 2px;
+  line-height: 1;
+}
+
+.calc-readonly-hint {
+  font-size: 10px;
+  color: var(--text-light);
+  font-style: italic;
+}
+
 .section-header {
   display: flex;
   align-items: center;

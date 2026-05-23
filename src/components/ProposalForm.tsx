@@ -66,7 +66,6 @@ export function ProposalForm({ data, onChange }: Props) {
       spotonMonthly: 0,
       currentMonthly: 0,
       hardwarePrice: 0,
-      monthlySavings: 0,
       features: data.features.map((f) => ({
         featureId: f.id,
         spotonIncluded: false,
@@ -223,6 +222,40 @@ export function ProposalForm({ data, onChange }: Props) {
         </div>
       </section>
 
+      {/* Processing Calculator */}
+      <section className="form-section calc-section">
+        <div className="section-header">
+          <h3>Processing Savings Calculator</h3>
+        </div>
+        <p className="form-hint">Enter monthly processing costs — savings auto-fill on each plan.</p>
+        <div className="field-group">
+          <label>
+            Current Monthly Processing ($)
+            <input
+              type="number"
+              min={0}
+              value={data.currentProcessing}
+              onChange={(e) => set('currentProcessing', parseFloat(e.target.value) || 0)}
+            />
+          </label>
+          <label>
+            SpotOn Monthly Processing ($)
+            <input
+              type="number"
+              min={0}
+              value={data.spotonProcessing}
+              onChange={(e) => set('spotonProcessing', parseFloat(e.target.value) || 0)}
+            />
+          </label>
+        </div>
+        <div className="calc-result">
+          <span className="calc-result-label">Monthly Processing Savings</span>
+          <span className={`calc-result-value${(data.currentProcessing - data.spotonProcessing) >= 0 ? ' positive' : ' negative'}`}>
+            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(data.currentProcessing - data.spotonProcessing)}/mo
+          </span>
+        </div>
+      </section>
+
       {/* Plans */}
       <section className="form-section">
         <div className="section-header">
@@ -363,14 +396,14 @@ export function ProposalForm({ data, onChange }: Props) {
                   onChange={(e) => updatePlan(plan.id, 'hardwarePrice', parseFloat(e.target.value) || 0)}
                 />
               </label>
-              <label>
-                Monthly Savings ($)
-                <input
-                  type="number"
-                  min={0}
-                  value={plan.monthlySavings}
-                  onChange={(e) => updatePlan(plan.id, 'monthlySavings', parseFloat(e.target.value) || 0)}
-                />
+              <label className="calc-readonly-label">
+                Total Monthly Savings
+                <div className="calc-readonly-value">
+                  {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(
+                    (plan.currentMonthly - plan.spotonMonthly) + (data.currentProcessing - data.spotonProcessing)
+                  )}/mo
+                </div>
+                <span className="calc-readonly-hint">software + processing savings</span>
               </label>
             </div>
           </div>
