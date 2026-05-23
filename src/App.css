@@ -681,9 +681,9 @@ textarea { resize: vertical; }
 
 /* Prepared for intro */
 .doc-intro {
-  padding: 22px 0 24px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 28px;
+  background: var(--navy);
+  margin: 0 -36px 28px;
+  padding: 22px 36px 24px;
 }
 .doc-intro-label {
   font-size: 10px;
@@ -696,14 +696,14 @@ textarea { resize: vertical; }
 .doc-intro-name {
   font-size: 28px;
   font-weight: 800;
-  color: var(--navy);
+  color: #fff;
   letter-spacing: -0.5px;
   margin: 0;
   line-height: 1.15;
 }
 .doc-intro-contact {
   font-size: 13px;
-  color: var(--text-mid);
+  color: rgba(255,255,255,0.6);
   margin: 5px 0 0;
 }
 
