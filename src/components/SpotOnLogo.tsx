@@ -6,7 +6,7 @@ interface Props {
 }
 
 export function SpotOnLogo({ size = 'normal', variant = 'dark' }: Props) {
-  const scale = size === 'small' ? 0.72 : size === 'large' ? 1.5 : 1;
+  const scale = size === 'small' ? 0.72 : size === 'large' ? 2.2 : 1;
   const w = Math.round(120 * scale);
   const h = Math.round(30 * scale);
   const color = variant === 'light' ? '#ffffff' : '#111111';

@@ -1010,8 +1010,8 @@ textarea { resize: vertical; }
 }
 
 .fls-client-logo {
-  max-width: 140px;
-  max-height: 64px;
+  max-width: 200px;
+  max-height: 110px;
   object-fit: contain;
 }
 
