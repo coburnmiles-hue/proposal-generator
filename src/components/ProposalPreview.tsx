@@ -1,6 +1,8 @@
 import { forwardRef } from 'react';
 import type { ProposalData } from '../types';
 import { SpotOnLogo } from './SpotOnLogo';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCcVisa, faCcMastercard, faCcDiscover, faCcAmex } from '@fortawesome/free-brands-svg-icons';
 
 interface Props {
   data: ProposalData;
@@ -111,22 +113,44 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
               <span>{data.currentRate.flatPercentage.toFixed(2)}% + ${data.currentRate.flatPerTx.toFixed(2)}</span>
             )}
             {data.currentRate.type === 'tiered-simple' && (
-              <>
-                <span><strong>Visa/MC/Disc:</strong> {data.currentRate.vmcPercentage.toFixed(2)}% + ${data.currentRate.vmcPerTx.toFixed(2)}</span>
-                <span><strong>AMEX:</strong> {data.currentRate.amexPercentage.toFixed(2)}% + ${data.currentRate.amexPerTx.toFixed(2)}</span>
-              </>
+              <div className="dcr-two-col">
+                <div className="dcr-col">
+                  <div className="dcr-col-icons">
+                    <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                  </div>
+                  <span>{data.currentRate.vmcPercentage.toFixed(2)}% + ${data.currentRate.vmcPerTx.toFixed(2)}</span>
+                </div>
+                <div className="dcr-col">
+                  <div className="dcr-col-icons">
+                    <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                  </div>
+                  <span>{data.currentRate.amexPercentage.toFixed(2)}% + ${data.currentRate.amexPerTx.toFixed(2)}</span>
+                </div>
+              </div>
             )}
             {data.currentRate.type === 'tiered' && (
-              <>
-                <span><strong>Visa/MC/Disc</strong></span>
-                <span>Non-Qual: {data.currentRate.vmcNonQualPercentage.toFixed(2)}%</span>
-                <span>Qual: {data.currentRate.vmcQualPercentage.toFixed(2)}%</span>
-                <span>Per Trans: ${data.currentRate.vmcPerTx.toFixed(2)}</span>
-                <span><strong>AMEX</strong></span>
-                <span>Non-Qual: {data.currentRate.amexNonQualPercentage.toFixed(2)}%</span>
-                <span>Qual: {data.currentRate.amexQualPercentage.toFixed(2)}%</span>
-                <span>Per Trans: ${data.currentRate.amexPerTx.toFixed(2)}</span>
-              </>
+              <div className="dcr-two-col">
+                <div className="dcr-col">
+                  <div className="dcr-col-icons">
+                    <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                  </div>
+                  <span>Non-Qual: {data.currentRate.vmcNonQualPercentage.toFixed(2)}%</span>
+                  <span>Qual: {data.currentRate.vmcQualPercentage.toFixed(2)}%</span>
+                  <span>Per Trans: ${data.currentRate.vmcPerTx.toFixed(2)}</span>
+                </div>
+                <div className="dcr-col">
+                  <div className="dcr-col-icons">
+                    <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                  </div>
+                  <span>Non-Qual: {data.currentRate.amexNonQualPercentage.toFixed(2)}%</span>
+                  <span>Qual: {data.currentRate.amexQualPercentage.toFixed(2)}%</span>
+                  <span>Per Trans: ${data.currentRate.amexPerTx.toFixed(2)}</span>
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -165,20 +189,42 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     )}
                     {plan.rate.type === 'tiered-simple' && (
                       <>
-                        <span><strong>Visa/MC/Disc:</strong> {plan.rate.vmcPercentage.toFixed(2)}% + ${plan.rate.vmcPerTx.toFixed(2)}</span>
-                        <span><strong>AMEX:</strong> {plan.rate.amexPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}</span>
+                        <div className="card-rate-brand-row">
+                          <span className="card-rate-brand-icons">
+                            <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                            <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                            <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                          </span>
+                          <span>{plan.rate.vmcPercentage.toFixed(2)}% + ${plan.rate.vmcPerTx.toFixed(2)}</span>
+                        </div>
+                        <div className="card-rate-brand-row">
+                          <span className="card-rate-brand-icons">
+                            <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                          </span>
+                          <span>{plan.rate.amexPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}</span>
+                        </div>
                       </>
                     )}
                     {plan.rate.type === 'tiered' && (
                       <>
-                        <span><strong>Visa/MC/Disc</strong></span>
-                        <span>Non-Qual: {plan.rate.vmcNonQualPercentage.toFixed(2)}%</span>
-                        <span>Qual: {plan.rate.vmcQualPercentage.toFixed(2)}%</span>
-                        <span>Per Trans: ${plan.rate.vmcPerTx.toFixed(2)}</span>
-                        <span><strong>AMEX</strong></span>
-                        <span>Non-Qual: {plan.rate.amexNonQualPercentage.toFixed(2)}%</span>
-                        <span>Qual: {plan.rate.amexQualPercentage.toFixed(2)}%</span>
-                        <span>Per Trans: ${plan.rate.amexPerTx.toFixed(2)}</span>
+                        <div className="card-rate-brand-group">
+                          <div className="card-rate-brand-icons">
+                            <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                            <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                            <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                          </div>
+                          <span>Non-Qual: {plan.rate.vmcNonQualPercentage.toFixed(2)}%</span>
+                          <span>Qual: {plan.rate.vmcQualPercentage.toFixed(2)}%</span>
+                          <span>Per Trans: ${plan.rate.vmcPerTx.toFixed(2)}</span>
+                        </div>
+                        <div className="card-rate-brand-group">
+                          <div className="card-rate-brand-icons">
+                            <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                          </div>
+                          <span>Non-Qual: {plan.rate.amexNonQualPercentage.toFixed(2)}%</span>
+                          <span>Qual: {plan.rate.amexQualPercentage.toFixed(2)}%</span>
+                          <span>Per Trans: ${plan.rate.amexPerTx.toFixed(2)}</span>
+                        </div>
                       </>
                     )}
                   </div>
