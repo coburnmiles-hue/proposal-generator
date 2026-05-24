@@ -10,7 +10,7 @@ export interface PlanFeature {
   currentIncluded: boolean;
 }
 
-export type RateType = 'interchange+' | 'flat' | 'dual-pricing' | 'tiered';
+export type RateType = 'interchange+' | 'flat' | 'dual-pricing' | 'tiered-simple' | 'tiered';
 
 export interface PlanRate {
   type: RateType;
@@ -20,11 +20,16 @@ export interface PlanRate {
   /** Flat */
   flatPercentage: number;
   flatPerTx: number;
-  /** Tiered */
+  /** Tiered Simple */
   vmcPercentage: number;
   vmcPerTx: number;
   amexPercentage: number;
   amexPerTx: number;
+  /** Tiered (full Non-Qual / Qual) */
+  vmcNonQualPercentage: number;
+  vmcQualPercentage: number;
+  amexNonQualPercentage: number;
+  amexQualPercentage: number;
 }
 
 export interface Plan {

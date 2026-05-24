@@ -94,6 +94,8 @@ export function ProposalForm({ data, onChange }: Props) {
         flatPercentage: 0, flatPerTx: 0,
         vmcPercentage: 0, vmcPerTx: 0,
         amexPercentage: 0, amexPerTx: 0,
+        vmcNonQualPercentage: 0, vmcQualPercentage: 0,
+        amexNonQualPercentage: 0, amexQualPercentage: 0,
       },
       spotonMonthly: 0,
       spotonProcessing: 0,
@@ -282,6 +284,7 @@ export function ProposalForm({ data, onChange }: Props) {
               <option value="interchange+">Interchange+</option>
               <option value="flat">Flat</option>
               <option value="dual-pricing">Dual Pricing</option>
+              <option value="tiered-simple">Tiered Simple</option>
               <option value="tiered">Tiered</option>
             </select>
           </label>
@@ -315,7 +318,7 @@ export function ProposalForm({ data, onChange }: Props) {
               </label>
             </div>
           )}
-          {data.currentRate.type === 'tiered' && (
+          {data.currentRate.type === 'tiered-simple' && (
             <>
               <div className="rate-group-label">Visa / MC / Discover</div>
               <div className="field-group">
@@ -331,6 +334,38 @@ export function ProposalForm({ data, onChange }: Props) {
                 <label>Rate (%)
                   <NumericInput value={data.currentRate.amexPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, amexPercentage: val })} min={0} />
                 </label>
+                <label>Per Transaction ($)
+                  <NumericInput value={data.currentRate.amexPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, amexPerTx: val })} min={0} />
+                </label>
+              </div>
+            </>
+          )}
+          {data.currentRate.type === 'tiered' && (
+            <>
+              <div className="rate-group-label">Visa / MC / Discover</div>
+              <div className="field-group">
+                <label>Non-Qualified (%)
+                  <NumericInput value={data.currentRate.vmcNonQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, vmcNonQualPercentage: val })} min={0} />
+                </label>
+                <label>Qualified (%)
+                  <NumericInput value={data.currentRate.vmcQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, vmcQualPercentage: val })} min={0} />
+                </label>
+              </div>
+              <div className="field-group">
+                <label>Per Transaction ($)
+                  <NumericInput value={data.currentRate.vmcPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, vmcPerTx: val })} min={0} />
+                </label>
+              </div>
+              <div className="rate-group-label">AMEX</div>
+              <div className="field-group">
+                <label>Non-Qualified (%)
+                  <NumericInput value={data.currentRate.amexNonQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, amexNonQualPercentage: val })} min={0} />
+                </label>
+                <label>Qualified (%)
+                  <NumericInput value={data.currentRate.amexQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, amexQualPercentage: val })} min={0} />
+                </label>
+              </div>
+              <div className="field-group">
                 <label>Per Transaction ($)
                   <NumericInput value={data.currentRate.amexPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, amexPerTx: val })} min={0} />
                 </label>
@@ -384,6 +419,7 @@ export function ProposalForm({ data, onChange }: Props) {
                   <option value="interchange+">Interchange+</option>
                   <option value="flat">Flat</option>
                   <option value="dual-pricing">Dual Pricing</option>
+                  <option value="tiered-simple">Tiered Simple</option>
                   <option value="tiered">Tiered</option>
                 </select>
               </label>
@@ -427,7 +463,7 @@ export function ProposalForm({ data, onChange }: Props) {
                 </div>
               )}
 
-              {plan.rate.type === 'tiered' && (
+              {plan.rate.type === 'tiered-simple' && (
                 <>
                   <div className="rate-group-label">Visa / MC / Discover</div>
                   <div className="field-group">
@@ -446,6 +482,45 @@ export function ProposalForm({ data, onChange }: Props) {
                       Rate (%)
                       <NumericInput value={plan.rate.amexPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPercentage: val })} min={0} />
                     </label>
+                    <label>
+                      Per Transaction ($)
+                      <NumericInput value={plan.rate.amexPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPerTx: val })} min={0} />
+                    </label>
+                  </div>
+                </>
+              )}
+
+              {plan.rate.type === 'tiered' && (
+                <>
+                  <div className="rate-group-label">Visa / MC / Discover</div>
+                  <div className="field-group">
+                    <label>
+                      Non-Qualified (%)
+                      <NumericInput value={plan.rate.vmcNonQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcNonQualPercentage: val })} min={0} />
+                    </label>
+                    <label>
+                      Qualified (%)
+                      <NumericInput value={plan.rate.vmcQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcQualPercentage: val })} min={0} />
+                    </label>
+                  </div>
+                  <div className="field-group">
+                    <label>
+                      Per Transaction ($)
+                      <NumericInput value={plan.rate.vmcPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcPerTx: val })} min={0} />
+                    </label>
+                  </div>
+                  <div className="rate-group-label">AMEX</div>
+                  <div className="field-group">
+                    <label>
+                      Non-Qualified (%)
+                      <NumericInput value={plan.rate.amexNonQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexNonQualPercentage: val })} min={0} />
+                    </label>
+                    <label>
+                      Qualified (%)
+                      <NumericInput value={plan.rate.amexQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexQualPercentage: val })} min={0} />
+                    </label>
+                  </div>
+                  <div className="field-group">
                     <label>
                       Per Transaction ($)
                       <NumericInput value={plan.rate.amexPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPerTx: val })} min={0} />

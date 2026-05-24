@@ -91,13 +91,16 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
       {/* Current Rate Reference */}
       {data.currentRate && (data.currentRate.basisPoints > 0 || data.currentRate.interchangePerTx > 0 ||
         data.currentRate.flatPercentage > 0 || data.currentRate.flatPerTx > 0 ||
-        data.currentRate.vmcPercentage > 0 || data.currentRate.amexPercentage > 0) && (
+        data.currentRate.vmcPercentage > 0 || data.currentRate.amexPercentage > 0 ||
+        data.currentRate.vmcNonQualPercentage > 0 || data.currentRate.vmcQualPercentage > 0 ||
+        data.currentRate.amexNonQualPercentage > 0 || data.currentRate.amexQualPercentage > 0) && (
         <div className="doc-current-rate">
           <span className="dcr-label">Current Rate</span>
           <span className="dcr-badge">
             {data.currentRate.type === 'interchange+' ? 'Interchange+'
               : data.currentRate.type === 'flat' ? 'Flat Rate'
               : data.currentRate.type === 'dual-pricing' ? 'Dual Pricing'
+              : data.currentRate.type === 'tiered-simple' ? 'Tiered Simple'
               : 'Tiered'}
           </span>
           <div className="dcr-details">
@@ -107,10 +110,18 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
             {(data.currentRate.type === 'flat' || data.currentRate.type === 'dual-pricing') && (
               <span>{data.currentRate.flatPercentage.toFixed(2)}% + ${data.currentRate.flatPerTx.toFixed(2)}</span>
             )}
-            {data.currentRate.type === 'tiered' && (
+            {data.currentRate.type === 'tiered-simple' && (
               <>
                 <span><strong>Visa/MC/Disc:</strong> {data.currentRate.vmcPercentage.toFixed(2)}% + ${data.currentRate.vmcPerTx.toFixed(2)}</span>
                 <span><strong>AMEX:</strong> {data.currentRate.amexPercentage.toFixed(2)}% + ${data.currentRate.amexPerTx.toFixed(2)}</span>
+              </>
+            )}
+            {data.currentRate.type === 'tiered' && (
+              <>
+                <span><strong>Visa/MC/Disc</strong></span>
+                <span>Non-Qual: {data.currentRate.vmcNonQualPercentage.toFixed(2)}%&nbsp;&nbsp;Qual: {data.currentRate.vmcQualPercentage.toFixed(2)}%&nbsp;&nbsp;Per Tx: ${data.currentRate.vmcPerTx.toFixed(2)}</span>
+                <span><strong>AMEX</strong></span>
+                <span>Non-Qual: {data.currentRate.amexNonQualPercentage.toFixed(2)}%&nbsp;&nbsp;Qual: {data.currentRate.amexQualPercentage.toFixed(2)}%&nbsp;&nbsp;Per Tx: ${data.currentRate.amexPerTx.toFixed(2)}</span>
               </>
             )}
           </div>
@@ -135,6 +146,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     {plan.rate.type === 'interchange+' ? 'Interchange+'
                       : plan.rate.type === 'flat' ? 'Flat Rate'
                       : plan.rate.type === 'dual-pricing' ? 'Dual Pricing'
+                      : plan.rate.type === 'tiered-simple' ? 'Tiered Simple'
                       : 'Tiered'}
                   </span>
                   <div className="card-rate-details">
@@ -147,10 +159,18 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     {plan.rate.type === 'dual-pricing' && (
                       <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}</span>
                     )}
-                    {plan.rate.type === 'tiered' && (
+                    {plan.rate.type === 'tiered-simple' && (
                       <>
                         <span><strong>Visa/MC/Disc:</strong> {plan.rate.vmcPercentage.toFixed(2)}% + ${plan.rate.vmcPerTx.toFixed(2)}</span>
                         <span><strong>AMEX:</strong> {plan.rate.amexPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}</span>
+                      </>
+                    )}
+                    {plan.rate.type === 'tiered' && (
+                      <>
+                        <span><strong>Visa/MC/Disc</strong></span>
+                        <span>Non-Qual: {plan.rate.vmcNonQualPercentage.toFixed(2)}%&nbsp;&nbsp;Qual: {plan.rate.vmcQualPercentage.toFixed(2)}%&nbsp;&nbsp;Per Tx: ${plan.rate.vmcPerTx.toFixed(2)}</span>
+                        <span><strong>AMEX</strong></span>
+                        <span>Non-Qual: {plan.rate.amexNonQualPercentage.toFixed(2)}%&nbsp;&nbsp;Qual: {plan.rate.amexQualPercentage.toFixed(2)}%&nbsp;&nbsp;Per Tx: ${plan.rate.amexPerTx.toFixed(2)}</span>
                       </>
                     )}
                   </div>

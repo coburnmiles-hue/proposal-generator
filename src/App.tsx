@@ -55,6 +55,10 @@ const DEFAULT_RATE = {
   vmcPerTx: 0,
   amexPercentage: 0,
   amexPerTx: 0,
+  vmcNonQualPercentage: 0,
+  vmcQualPercentage: 0,
+  amexNonQualPercentage: 0,
+  amexQualPercentage: 0,
 };
 
 const makeDefaultPlan = (name: string, features: typeof DEFAULT_FEATURES) => ({
@@ -82,6 +86,8 @@ const defaultData: ProposalData = {
     flatPercentage: 0, flatPerTx: 0,
     vmcPercentage: 0, vmcPerTx: 0,
     amexPercentage: 0, amexPerTx: 0,
+    vmcNonQualPercentage: 0, vmcQualPercentage: 0,
+    amexNonQualPercentage: 0, amexQualPercentage: 0,
   },
   features: DEFAULT_FEATURES,
   plans: [
