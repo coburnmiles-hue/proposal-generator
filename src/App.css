@@ -755,7 +755,10 @@ textarea { resize: vertical; }
 .doc-cards {
   display: grid;
   gap: 14px;
-  align-items: start;
+  align-items: stretch;
+}
+.plan-card {
+  height: 100%;
 }
 .doc-cards-1 { grid-template-columns: minmax(0, 420px); }
 .doc-cards-2 { grid-template-columns: repeat(2, 1fr); }
@@ -923,6 +926,7 @@ textarea { resize: vertical; }
 
 /* Card top */
 .card-top {
+  flex: 1;
   background: linear-gradient(160deg, var(--accent-bg) 0%, #ffffff 100%);
   padding: 20px 18px 16px;
   border-bottom: 2px solid var(--border);
