@@ -29,6 +29,7 @@ function persistSaved(list: SavedProposal[]) {
 }
 
 const DEFAULT_FEATURES = [
+  { id: uuidv4(), name: 'Local & 24/7 Support' },
   { id: uuidv4(), name: 'Handhelds' },
   { id: uuidv4(), name: 'POS' },
   { id: uuidv4(), name: 'KDS' },
@@ -41,7 +42,6 @@ const DEFAULT_FEATURES = [
   { id: uuidv4(), name: 'Instant Cash Tip Deposit' },
   { id: uuidv4(), name: 'Loyalty' },
   { id: uuidv4(), name: 'Reservation Manager' },
-  { id: uuidv4(), name: 'Local & 24/7 Support' },
   { id: uuidv4(), name: 'DD / UE Integrations' },
 ];
 
@@ -76,6 +76,13 @@ const defaultData: ProposalData = {
   companyName: 'SpotOn',
   currentMonthly: 0,
   currentProcessing: 0,
+  currentRate: {
+    type: 'interchange+' as const,
+    basisPoints: 0, interchangePerTx: 0,
+    flatPercentage: 0, flatPerTx: 0,
+    vmcPercentage: 0, vmcPerTx: 0,
+    amexPercentage: 0, amexPerTx: 0,
+  },
   features: DEFAULT_FEATURES,
   plans: [
     makeDefaultPlan('SpotOn Basic', DEFAULT_FEATURES),

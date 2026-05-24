@@ -46,6 +46,7 @@ export interface ProposalData {
   companyName: string;
   currentMonthly: number;
   currentProcessing: number;
+  currentRate: PlanRate;
   features: Feature[];
   plans: Plan[];
 }

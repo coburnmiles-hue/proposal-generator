@@ -787,8 +787,9 @@ textarea { resize: vertical; }
 /* Rate display in card */
 .card-rate {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 6px;
   margin-bottom: 14px;
   padding: 10px 12px;
   background: var(--white);
@@ -815,9 +816,59 @@ textarea { resize: vertical; }
   flex-direction: column;
   gap: 2px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text-mid);
   line-height: 1.4;
+}
+
+/* Current Rate reference block */
+.doc-current-rate {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 18px;
+  padding: 8px 14px;
+  background: #fff5f7;
+  border: 1px solid #f5c0cb;
+  border-left: 4px solid var(--brand);
+  border-radius: 8px;
+}
+.dcr-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+  margin-right: 2px;
+}
+.dcr-badge {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  background: var(--brand);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.dcr-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+.dcr-details strong {
+  font-weight: 700;
+}
+
+/* Divider in calc section */
+.calc-divider {
+  border: none;
+  border-top: 1px solid #d5ddf0;
+  margin: 10px 0;
 }
 
 /* Rate section in form */

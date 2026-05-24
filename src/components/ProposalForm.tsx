@@ -276,6 +276,75 @@ export function ProposalForm({ data, onChange }: Props) {
             {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(data.currentProcessing)}/mo
           </span>
         </div>
+
+        <div className="calc-divider" />
+        <p className="form-hint" style={{ marginTop: 4 }}>Current processing rate — shown on proposal for reference only.</p>
+        <div className="rate-section">
+          <label className="rate-type-label">
+            Current Processing Rate
+            <select
+              value={data.currentRate.type}
+              onChange={(e) => set('currentRate', { ...data.currentRate, type: e.target.value as PlanRate['type'] })}
+            >
+              <option value="interchange+">Interchange+</option>
+              <option value="flat">Flat</option>
+              <option value="dual-pricing">Dual Pricing</option>
+              <option value="tiered">Tiered</option>
+            </select>
+          </label>
+          {data.currentRate.type === 'interchange+' && (
+            <div className="field-group">
+              <label>Basis Points
+                <NumericInput value={data.currentRate.basisPoints} onChange={(val) => set('currentRate', { ...data.currentRate, basisPoints: val })} min={0} />
+              </label>
+              <label>Per Transaction ($)
+                <NumericInput value={data.currentRate.interchangePerTx} onChange={(val) => set('currentRate', { ...data.currentRate, interchangePerTx: val })} min={0} />
+              </label>
+            </div>
+          )}
+          {data.currentRate.type === 'flat' && (
+            <div className="field-group">
+              <label>Percentage (%)
+                <NumericInput value={data.currentRate.flatPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, flatPercentage: val })} min={0} />
+              </label>
+              <label>Per Transaction ($)
+                <NumericInput value={data.currentRate.flatPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, flatPerTx: val })} min={0} />
+              </label>
+            </div>
+          )}
+          {data.currentRate.type === 'dual-pricing' && (
+            <div className="field-group">
+              <label>Percentage (%)
+                <NumericInput value={data.currentRate.flatPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, flatPercentage: val })} min={0} />
+              </label>
+              <label>Per Transaction ($)
+                <NumericInput value={data.currentRate.flatPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, flatPerTx: val })} min={0} />
+              </label>
+            </div>
+          )}
+          {data.currentRate.type === 'tiered' && (
+            <>
+              <div className="rate-group-label">Visa / MC / Discover</div>
+              <div className="field-group">
+                <label>Rate (%)
+                  <NumericInput value={data.currentRate.vmcPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, vmcPercentage: val })} min={0} />
+                </label>
+                <label>Per Transaction ($)
+                  <NumericInput value={data.currentRate.vmcPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, vmcPerTx: val })} min={0} />
+                </label>
+              </div>
+              <div className="rate-group-label">AMEX</div>
+              <div className="field-group">
+                <label>Rate (%)
+                  <NumericInput value={data.currentRate.amexPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, amexPercentage: val })} min={0} />
+                </label>
+                <label>Per Transaction ($)
+                  <NumericInput value={data.currentRate.amexPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, amexPerTx: val })} min={0} />
+                </label>
+              </div>
+            </>
+          )}
+        </div>
       </section>
 
       {/* Plans */}
