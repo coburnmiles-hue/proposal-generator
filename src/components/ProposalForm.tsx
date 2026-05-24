@@ -96,6 +96,7 @@ export function ProposalForm({ data, onChange }: Props) {
         amexPercentage: 0, amexPerTx: 0,
       },
       spotonMonthly: 0,
+      spotonProcessing: 0,
       hardwarePrice: 0,
       features: data.features.map((f) => ({
         featureId: f.id,
@@ -264,21 +265,15 @@ export function ProposalForm({ data, onChange }: Props) {
             Current Monthly Software ($)
             <NumericInput value={data.currentMonthly} onChange={(val) => set('currentMonthly', val)} min={0} />
           </label>
-        </div>
-        <div className="field-group">
           <label>
             Current Monthly Processing ($)
             <NumericInput value={data.currentProcessing} onChange={(val) => set('currentProcessing', val)} min={0} />
           </label>
-          <label>
-            SpotOn Monthly Processing ($)
-            <NumericInput value={data.spotonProcessing} onChange={(val) => set('spotonProcessing', val)} min={0} />
-          </label>
         </div>
         <div className="calc-result">
           <span className="calc-result-label">Monthly Processing Savings</span>
-          <span className={`calc-result-value${(data.currentProcessing - data.spotonProcessing) >= 0 ? ' positive' : ' negative'}`}>
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(data.currentProcessing - data.spotonProcessing)}/mo
+          <span className={`calc-result-value${data.currentProcessing >= 0 ? ' positive' : ' negative'}`}>
+            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(data.currentProcessing)}/mo
           </span>
         </div>
       </section>
@@ -400,8 +395,12 @@ export function ProposalForm({ data, onChange }: Props) {
 
             <div className="field-group">
               <label>
-                {data.companyName || 'SpotOn'} Monthly ($)
+                {data.companyName || 'SpotOn'} Monthly Software ($)
                 <NumericInput value={plan.spotonMonthly} onChange={(val) => updatePlan(plan.id, 'spotonMonthly', val)} min={0} />
+              </label>
+              <label>
+                {data.companyName || 'SpotOn'} Monthly Processing ($)
+                <NumericInput value={plan.spotonProcessing} onChange={(val) => updatePlan(plan.id, 'spotonProcessing', val)} min={0} />
               </label>
             </div>
 
@@ -414,7 +413,7 @@ export function ProposalForm({ data, onChange }: Props) {
                 Total Monthly Savings
                 <div className="calc-readonly-value">
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(
-                    (data.currentMonthly - plan.spotonMonthly) + (data.currentProcessing - data.spotonProcessing)
+                    (data.currentMonthly - plan.spotonMonthly) + (data.currentProcessing - plan.spotonProcessing)
                   )}/mo
                 </div>
                 <span className="calc-readonly-hint">software + processing savings</span>

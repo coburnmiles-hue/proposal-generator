@@ -33,6 +33,7 @@ export interface Plan {
   description: string;
   rate: PlanRate;
   spotonMonthly: number;
+  spotonProcessing: number;
   hardwarePrice: number;
   features: PlanFeature[];
 }
@@ -45,7 +46,6 @@ export interface ProposalData {
   companyName: string;
   currentMonthly: number;
   currentProcessing: number;
-  spotonProcessing: number;
   features: Feature[];
   plans: Plan[];
 }
