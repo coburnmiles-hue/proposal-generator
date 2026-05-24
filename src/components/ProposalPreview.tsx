@@ -100,7 +100,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
             {data.currentRate.type === 'interchange+' ? 'Interchange+'
               : data.currentRate.type === 'flat' ? 'Flat Rate'
               : data.currentRate.type === 'dual-pricing' ? 'Dual Pricing'
-              : data.currentRate.type === 'tiered-simple' ? 'Tiered Simple'
+              : data.currentRate.type === 'tiered-simple' ? 'Tiered'
               : 'Tiered'}
           </span>
           <div className="dcr-details">
@@ -146,7 +146,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     {plan.rate.type === 'interchange+' ? 'Interchange+'
                       : plan.rate.type === 'flat' ? 'Flat Rate'
                       : plan.rate.type === 'dual-pricing' ? 'Dual Pricing'
-                      : plan.rate.type === 'tiered-simple' ? 'Tiered Simple'
+                      : plan.rate.type === 'tiered-simple' ? 'Tiered'
                       : 'Tiered'}
                   </span>
                   <div className="card-rate-details">
