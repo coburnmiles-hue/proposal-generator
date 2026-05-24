@@ -270,13 +270,6 @@ export function ProposalForm({ data, onChange }: Props) {
             <NumericInput value={data.currentProcessing} onChange={(val) => set('currentProcessing', val)} min={0} />
           </label>
         </div>
-        <div className="calc-result">
-          <span className="calc-result-label">Monthly Processing Savings</span>
-          <span className={`calc-result-value${data.currentProcessing >= 0 ? ' positive' : ' negative'}`}>
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(data.currentProcessing)}/mo
-          </span>
-        </div>
-
         <div className="calc-divider" />
         <p className="form-hint" style={{ marginTop: 4 }}>Current processing rate — shown on proposal for reference only.</p>
         <div className="rate-section">
