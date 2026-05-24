@@ -119,9 +119,13 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
             {data.currentRate.type === 'tiered' && (
               <>
                 <span><strong>Visa/MC/Disc</strong></span>
-                <span>Non-Qual: {data.currentRate.vmcNonQualPercentage.toFixed(2)}%&nbsp;&nbsp;Qual: {data.currentRate.vmcQualPercentage.toFixed(2)}%&nbsp;&nbsp;Per Tx: ${data.currentRate.vmcPerTx.toFixed(2)}</span>
+                <span>Non-Qual: {data.currentRate.vmcNonQualPercentage.toFixed(2)}%</span>
+                <span>Qual: {data.currentRate.vmcQualPercentage.toFixed(2)}%</span>
+                <span>Per Trans: ${data.currentRate.vmcPerTx.toFixed(2)}</span>
                 <span><strong>AMEX</strong></span>
-                <span>Non-Qual: {data.currentRate.amexNonQualPercentage.toFixed(2)}%&nbsp;&nbsp;Qual: {data.currentRate.amexQualPercentage.toFixed(2)}%&nbsp;&nbsp;Per Tx: ${data.currentRate.amexPerTx.toFixed(2)}</span>
+                <span>Non-Qual: {data.currentRate.amexNonQualPercentage.toFixed(2)}%</span>
+                <span>Qual: {data.currentRate.amexQualPercentage.toFixed(2)}%</span>
+                <span>Per Trans: ${data.currentRate.amexPerTx.toFixed(2)}</span>
               </>
             )}
           </div>
@@ -168,9 +172,13 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     {plan.rate.type === 'tiered' && (
                       <>
                         <span><strong>Visa/MC/Disc</strong></span>
-                        <span>Non-Qual: {plan.rate.vmcNonQualPercentage.toFixed(2)}%&nbsp;&nbsp;Qual: {plan.rate.vmcQualPercentage.toFixed(2)}%&nbsp;&nbsp;Per Tx: ${plan.rate.vmcPerTx.toFixed(2)}</span>
+                        <span>Non-Qual: {plan.rate.vmcNonQualPercentage.toFixed(2)}%</span>
+                        <span>Qual: {plan.rate.vmcQualPercentage.toFixed(2)}%</span>
+                        <span>Per Trans: ${plan.rate.vmcPerTx.toFixed(2)}</span>
                         <span><strong>AMEX</strong></span>
-                        <span>Non-Qual: {plan.rate.amexNonQualPercentage.toFixed(2)}%&nbsp;&nbsp;Qual: {plan.rate.amexQualPercentage.toFixed(2)}%&nbsp;&nbsp;Per Tx: ${plan.rate.amexPerTx.toFixed(2)}</span>
+                        <span>Non-Qual: {plan.rate.amexNonQualPercentage.toFixed(2)}%</span>
+                        <span>Qual: {plan.rate.amexQualPercentage.toFixed(2)}%</span>
+                        <span>Per Trans: ${plan.rate.amexPerTx.toFixed(2)}</span>
                       </>
                     )}
                   </div>
