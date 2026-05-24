@@ -987,7 +987,7 @@ textarea { resize: vertical; }
 }
 .cs-spoton  { color: var(--navy); }
 .cs-current { color: var(--brand); }
-.cs-hardware { color: var(--navy); font-size: 18px; }
+.cs-hardware { color: var(--navy); }
 
 /* Feature table */
 .card-features {
