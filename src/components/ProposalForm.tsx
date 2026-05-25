@@ -147,7 +147,7 @@ export function ProposalForm({ data, onChange }: Props) {
     };
 
   // ---- Rate Analysis image parsing ----
-  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('openai-api-key') || '');
+  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('gemini-api-key') || '');
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [apiKeyDraft, setApiKeyDraft] = useState('');
   const [isParsing, setIsParsing] = useState(false);
@@ -157,18 +157,18 @@ export function ProposalForm({ data, onChange }: Props) {
   const saveApiKey = (key: string) => {
     const trimmed = key.trim();
     setApiKey(trimmed);
-    localStorage.setItem('openai-api-key', trimmed);
+    localStorage.setItem('gemini-api-key', trimmed);
     setShowApiKeyInput(false);
   };
 
   const clearApiKey = () => {
     setApiKey('');
-    localStorage.removeItem('openai-api-key');
+    localStorage.removeItem('gemini-api-key');
   };
 
   const parseRateAnalysis = async (file: File) => {
     if (!apiKey) {
-      setParseMsg({ type: 'error', text: 'Set an OpenAI API key above to use auto-fill.' });
+      setParseMsg({ type: 'error', text: 'Set a Gemini API key above to use auto-fill.' });
       return;
     }
     setIsParsing(true);
@@ -181,24 +181,27 @@ export function ProposalForm({ data, onChange }: Props) {
         reader.readAsDataURL(file);
       });
 
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [{
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: 'This is a payment processing rate analysis. Return ONLY a raw JSON object (no markdown, no explanation):\n{"vmcTransactions": <integer: transaction count from Transaction Fee row for Visa/MC/Discover>, "vmcVolume": <float: total dollar volume from Total Visa/MC/Discover row>, "vmcCurrentCost": <float: total current cost from Total Visa/MC/Discover row>, "amexTransactions": <integer: transaction count from Transaction Fee row for AMEX>, "amexVolume": <float: total dollar volume from Total AMEX row>, "amexCurrentCost": <float: total current cost from Total AMEX row>}\nIgnore ATM and any other card types. Use 0 for any value not found.',
-              },
-              { type: 'image_url', image_url: { url: dataUrl, detail: 'high' } },
-            ],
-          }],
-          max_tokens: 300,
-        }),
-      });
+      const base64Data = dataUrl.split(',')[1];
+      const mimeType = file.type || 'image/jpeg';
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                {
+                  text: 'This is a payment processing rate analysis. Return ONLY a raw JSON object (no markdown, no explanation):\n{"vmcTransactions": <integer: transaction count from Transaction Fee row for Visa/MC/Discover>, "vmcVolume": <float: total dollar volume from Total Visa/MC/Discover row>, "vmcCurrentCost": <float: total current cost from Total Visa/MC/Discover row>, "amexTransactions": <integer: transaction count from Transaction Fee row for AMEX>, "amexVolume": <float: total dollar volume from Total AMEX row>, "amexCurrentCost": <float: total current cost from Total AMEX row>}\nIgnore ATM and any other card types. Use 0 for any value not found.',
+                },
+                { inline_data: { mime_type: mimeType, data: base64Data } },
+              ],
+            }],
+            generationConfig: { maxOutputTokens: 300 },
+          }),
+        }
+      );
 
       if (!response.ok) {
         const err = await response.json();
@@ -206,7 +209,7 @@ export function ProposalForm({ data, onChange }: Props) {
       }
 
       const result = await response.json();
-      const text = (result.choices?.[0]?.message?.content ?? '').trim();
+      const text = (result.candidates?.[0]?.content?.parts?.[0]?.text ?? '').trim();
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) throw new Error('Could not parse AI response.');
 
@@ -361,12 +364,12 @@ export function ProposalForm({ data, onChange }: Props) {
             <div className="ra-key-bar">
               {apiKey ? (
                 <>
-                  <span className="ra-key-set">&#128273; API key set</span>
+                  <span className="ra-key-set">&#128273; Gemini key set</span>
                   <button className="ra-key-link" onClick={clearApiKey}>clear</button>
                 </>
               ) : (
                 <button className="ra-key-link" onClick={() => { setShowApiKeyInput(true); setApiKeyDraft(''); }}>
-                  &#128273; Set OpenAI key
+                  &#128273; Set Gemini key
                 </button>
               )}
             </div>
@@ -376,7 +379,7 @@ export function ProposalForm({ data, onChange }: Props) {
             <div className="ra-key-input-row">
               <input
                 type="password"
-                placeholder="sk-..."
+                placeholder="AIza..."
                 value={apiKeyDraft}
                 onChange={(e) => setApiKeyDraft(e.target.value)}
                 className="ra-key-input"
@@ -400,7 +403,7 @@ export function ProposalForm({ data, onChange }: Props) {
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) parseRateAnalysis(f); }}
               />
             </label>
-            {!apiKey && <span className="ra-upload-hint">Set an OpenAI API key to enable auto-fill</span>}
+            {!apiKey && <span className="ra-upload-hint">Set a Gemini API key to enable auto-fill</span>}
           </div>
 
           {parseMsg && (
