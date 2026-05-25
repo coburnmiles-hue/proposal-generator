@@ -75,12 +75,8 @@ const makeDefaultPlan = (name: string, features: typeof DEFAULT_FEATURES) => ({
 const DEFAULT_RATE_ANALYSIS = {
   vmcTransactions: 0,
   vmcVolume: 0,
-  vmcRate: 0,
-  vmcPerTx: 0,
   amexTransactions: 0,
   amexVolume: 0,
-  amexRate: 0,
-  amexPerTx: 0,
 };
 
 const defaultData: ProposalData = {
@@ -136,9 +132,12 @@ function App() {
 
   const handleLoad = (entry: SavedProposal) => {
     // Migrate older saved proposals that predate the rateAnalysis field
+    const ra = entry.data.rateAnalysis;
     const loaded: ProposalData = {
       ...entry.data,
-      rateAnalysis: entry.data.rateAnalysis ?? DEFAULT_RATE_ANALYSIS,
+      rateAnalysis: ra
+        ? { vmcTransactions: ra.vmcTransactions ?? 0, vmcVolume: ra.vmcVolume ?? 0, amexTransactions: ra.amexTransactions ?? 0, amexVolume: ra.amexVolume ?? 0 }
+        : DEFAULT_RATE_ANALYSIS,
     };
     setData(loaded);
     setShowSaved(false);

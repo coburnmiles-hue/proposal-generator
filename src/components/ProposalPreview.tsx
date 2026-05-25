@@ -3,7 +3,7 @@ import type { ProposalData } from '../types';
 import { SpotOnLogo } from './SpotOnLogo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCcVisa, faCcMastercard, faCcDiscover, faCcAmex } from '@fortawesome/free-brands-svg-icons';
-import { hasRateAnalysisData, calcCurrentProcessing, calcProjectedProcessing } from '../utils';
+import { calcProjectedProcessing } from '../utils';
 
 interface Props {
   data: ProposalData;
@@ -252,9 +252,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                 <div className="card-footer-label">Savings</div>
                 <div className="card-footer-savings">
                   {(() => {
-                    const currentProc = hasRateAnalysisData(data.rateAnalysis)
-                      ? calcCurrentProcessing(data.rateAnalysis)
-                      : data.currentProcessing;
+                    const currentProc = data.currentProcessing;
                     const projected = calcProjectedProcessing(plan.rate, data.rateAnalysis);
                     const planProc = projected !== null ? projected : plan.spotonProcessing;
                     const monthly = (data.currentMonthly - plan.spotonMonthly) + (currentProc - planProc);

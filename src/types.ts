@@ -46,12 +46,8 @@ export interface Plan {
 export interface RateAnalysis {
   vmcTransactions: number;
   vmcVolume: number;
-  vmcRate: number;   // percentage, e.g. 2.5 for 2.5%
-  vmcPerTx: number;  // dollar amount per transaction
   amexTransactions: number;
   amexVolume: number;
-  amexRate: number;
-  amexPerTx: number;
 }
 
 export interface ProposalData {

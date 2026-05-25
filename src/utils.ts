@@ -1,25 +1,14 @@
 import type { PlanRate, RateAnalysis } from './types';
 
 const EMPTY_RA: RateAnalysis = {
-  vmcTransactions: 0, vmcVolume: 0, vmcRate: 0, vmcPerTx: 0,
-  amexTransactions: 0, amexVolume: 0, amexRate: 0, amexPerTx: 0,
+  vmcTransactions: 0, vmcVolume: 0,
+  amexTransactions: 0, amexVolume: 0,
 };
 
 /** True when rate analysis has enough volume data to drive calculations */
 export function hasRateAnalysisData(ra: RateAnalysis | null | undefined): boolean {
   if (!ra) return false;
   return ra.vmcVolume > 0 || ra.amexVolume > 0;
-}
-
-/** Total current processing cost derived from the rate analysis inputs */
-export function calcCurrentProcessing(ra: RateAnalysis | null | undefined): number {
-  const r = ra ?? EMPTY_RA;
-  return (
-    r.vmcVolume * (r.vmcRate / 100) +
-    r.vmcTransactions * r.vmcPerTx +
-    r.amexVolume * (r.amexRate / 100) +
-    r.amexTransactions * r.amexPerTx
-  );
 }
 
 /**
