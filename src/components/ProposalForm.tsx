@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import type { Plan, PlanFeature, PlanRate, ProposalData } from '../types';
 import { hasRateAnalysisData, calcProjectedProcessing } from '../utils';
@@ -146,6 +146,93 @@ export function ProposalForm({ data, onChange }: Props) {
       currentIncluded: false,
     };
 
+  // ---- Rate Analysis image parsing ----
+  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('openai-api-key') || '');
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [apiKeyDraft, setApiKeyDraft] = useState('');
+  const [isParsing, setIsParsing] = useState(false);
+  const [parseMsg, setParseMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const saveApiKey = (key: string) => {
+    const trimmed = key.trim();
+    setApiKey(trimmed);
+    localStorage.setItem('openai-api-key', trimmed);
+    setShowApiKeyInput(false);
+  };
+
+  const clearApiKey = () => {
+    setApiKey('');
+    localStorage.removeItem('openai-api-key');
+  };
+
+  const parseRateAnalysis = async (file: File) => {
+    if (!apiKey) {
+      setParseMsg({ type: 'error', text: 'Set an OpenAI API key above to use auto-fill.' });
+      return;
+    }
+    setIsParsing(true);
+    setParseMsg(null);
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: 'This is a payment processing rate analysis. Return ONLY a raw JSON object (no markdown, no explanation):\n{"vmcTransactions": <integer: transaction count from Transaction Fee row for Visa/MC/Discover>, "vmcVolume": <float: total dollar volume from Total Visa/MC/Discover row>, "vmcCurrentCost": <float: total current cost from Total Visa/MC/Discover row>, "amexTransactions": <integer: transaction count from Transaction Fee row for AMEX>, "amexVolume": <float: total dollar volume from Total AMEX row>, "amexCurrentCost": <float: total current cost from Total AMEX row>}\nIgnore ATM and any other card types. Use 0 for any value not found.',
+              },
+              { type: 'image_url', image_url: { url: dataUrl, detail: 'high' } },
+            ],
+          }],
+          max_tokens: 300,
+        }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error?.message || `API error ${response.status}`);
+      }
+
+      const result = await response.json();
+      const text = (result.choices?.[0]?.message?.content ?? '').trim();
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('Could not parse AI response.');
+
+      const p = JSON.parse(jsonMatch[0]);
+      const vmcTx   = Math.round(Number(p.vmcTransactions)  || 0);
+      const vmcVol  = Number(p.vmcVolume)       || 0;
+      const vmcCost = Number(p.vmcCurrentCost)  || 0;
+      const amexTx  = Math.round(Number(p.amexTransactions) || 0);
+      const amexVol = Number(p.amexVolume)      || 0;
+      const amexCost= Number(p.amexCurrentCost) || 0;
+
+      onChange({
+        ...data,
+        rateAnalysis: { vmcTransactions: vmcTx, vmcVolume: vmcVol, amexTransactions: amexTx, amexVolume: amexVol },
+        currentProcessing: Math.round((vmcCost + amexCost) * 100) / 100,
+      });
+
+      setParseMsg({ type: 'success', text: `Auto-filled — V/MC/D: ${vmcTx.toLocaleString()} tx · ${fmtCurr(vmcVol)}  |  Amex: ${amexTx.toLocaleString()} tx · ${fmtCurr(amexVol)}  |  Current processing: ${fmtCurr(vmcCost + amexCost)}/mo` });
+    } catch (err) {
+      setParseMsg({ type: 'error', text: err instanceof Error ? err.message : 'Unexpected error.' });
+    } finally {
+      setIsParsing(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="form-panel">
       {/* Client Info */}
@@ -269,8 +356,58 @@ export function ProposalForm({ data, onChange }: Props) {
 
         {/* Rate Analysis */}
         <div className="ra-block">
-          <h4 className="ra-title">Rate Analysis</h4>
-          <p className="form-hint">Enter transaction counts and volume from the client's rate analysis. These are used to calculate projected processing costs when you enter new rates in each plan.</p>
+          <div className="ra-header">
+            <h4 className="ra-title">Rate Analysis</h4>
+            <div className="ra-key-bar">
+              {apiKey ? (
+                <>
+                  <span className="ra-key-set">&#128273; API key set</span>
+                  <button className="ra-key-link" onClick={clearApiKey}>clear</button>
+                </>
+              ) : (
+                <button className="ra-key-link" onClick={() => { setShowApiKeyInput(true); setApiKeyDraft(''); }}>
+                  &#128273; Set OpenAI key
+                </button>
+              )}
+            </div>
+          </div>
+
+          {showApiKeyInput && (
+            <div className="ra-key-input-row">
+              <input
+                type="password"
+                placeholder="sk-..."
+                value={apiKeyDraft}
+                onChange={(e) => setApiKeyDraft(e.target.value)}
+                className="ra-key-input"
+                onKeyDown={(e) => { if (e.key === 'Enter') saveApiKey(apiKeyDraft); if (e.key === 'Escape') setShowApiKeyInput(false); }}
+                autoFocus
+              />
+              <button className="btn-add" onClick={() => saveApiKey(apiKeyDraft)}>Save</button>
+              <button className="btn-remove" onClick={() => setShowApiKeyInput(false)}>&#10005;</button>
+            </div>
+          )}
+
+          <div className="ra-upload-row">
+            <label className={`ra-upload-btn${!apiKey || isParsing ? ' ra-upload-disabled' : ''}`}>
+              {isParsing ? '⏳ Parsing…' : '📄 Upload Rate Analysis'}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                disabled={!apiKey || isParsing}
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) parseRateAnalysis(f); }}
+              />
+            </label>
+            {!apiKey && <span className="ra-upload-hint">Set an OpenAI API key to enable auto-fill</span>}
+          </div>
+
+          {parseMsg && (
+            <div className={`ra-parse-msg ra-parse-${parseMsg.type}`}>{parseMsg.text}</div>
+          )}
+
+          <p className="form-hint" style={{ marginTop: 6 }}>Or enter manually:</p>
 
           <div className="rate-group-label">Visa / MC / Discover</div>
           <div className="field-group">
@@ -303,16 +440,10 @@ export function ProposalForm({ data, onChange }: Props) {
             return (
               <div className="ra-summary">
                 {vmcAvgTicket > 0 && (
-                  <div className="ra-summary-row">
-                    <span>VMC Avg Ticket</span>
-                    <strong>{fmtCurr(vmcAvgTicket)}</strong>
-                  </div>
+                  <div className="ra-summary-row"><span>VMC Avg Ticket</span><strong>{fmtCurr(vmcAvgTicket)}</strong></div>
                 )}
                 {amexAvgTicket > 0 && (
-                  <div className="ra-summary-row">
-                    <span>Amex Avg Ticket</span>
-                    <strong>{fmtCurr(amexAvgTicket)}</strong>
-                  </div>
+                  <div className="ra-summary-row"><span>Amex Avg Ticket</span><strong>{fmtCurr(amexAvgTicket)}</strong></div>
                 )}
               </div>
             );
