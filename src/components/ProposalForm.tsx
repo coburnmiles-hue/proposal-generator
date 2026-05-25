@@ -599,7 +599,7 @@ export function ProposalForm({ data, onChange }: Props) {
                 if (projected !== null) {
                   return (
                     <label className="calc-readonly-label">
-                      Projected Processing
+                      {data.companyName || 'SpotOn'} Monthly Processing
                       <div className="calc-readonly-value">{fmtCurr(projected)}/mo</div>
                       <span className="calc-readonly-hint">auto-calculated from rate analysis</span>
                     </label>
