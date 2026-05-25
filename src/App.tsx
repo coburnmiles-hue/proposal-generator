@@ -72,6 +72,17 @@ const makeDefaultPlan = (name: string, features: typeof DEFAULT_FEATURES) => ({
   features: features.map((f) => ({ featureId: f.id, spotonIncluded: false, currentIncluded: false })),
 });
 
+const DEFAULT_RATE_ANALYSIS = {
+  vmcTransactions: 0,
+  vmcVolume: 0,
+  vmcRate: 0,
+  vmcPerTx: 0,
+  amexTransactions: 0,
+  amexVolume: 0,
+  amexRate: 0,
+  amexPerTx: 0,
+};
+
 const defaultData: ProposalData = {
   clientName: '',
   clientCompany: '',
@@ -89,6 +100,7 @@ const defaultData: ProposalData = {
     vmcNonQualPercentage: 0, vmcQualPercentage: 0,
     amexNonQualPercentage: 0, amexQualPercentage: 0,
   },
+  rateAnalysis: DEFAULT_RATE_ANALYSIS,
   features: DEFAULT_FEATURES,
   plans: [
     makeDefaultPlan('SpotOn Basic', DEFAULT_FEATURES),
@@ -123,7 +135,12 @@ function App() {
   };
 
   const handleLoad = (entry: SavedProposal) => {
-    setData(entry.data);
+    // Migrate older saved proposals that predate the rateAnalysis field
+    const loaded: ProposalData = {
+      ...entry.data,
+      rateAnalysis: entry.data.rateAnalysis ?? DEFAULT_RATE_ANALYSIS,
+    };
+    setData(loaded);
     setShowSaved(false);
   };
 

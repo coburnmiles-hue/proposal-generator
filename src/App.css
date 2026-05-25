@@ -964,6 +964,65 @@ textarea { resize: vertical; }
   margin-top: 2px;
 }
 
+/* ── Rate Analysis block ─────────────────────────────────────── */
+.ra-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: #f0f4ff;
+  border: 1px solid #c8d6f5;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.ra-title {
+  margin: 0 0 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ra-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 8px 10px;
+  background: var(--white);
+  border: 1px solid #c8d6f5;
+  border-radius: 6px;
+}
+
+.ra-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-mid);
+}
+
+.ra-summary-row strong {
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+.ra-summary-total {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid #c8d6f5;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.ra-summary-total strong {
+  color: var(--brand);
+  font-size: 13px;
+}
+
 /* ── Per-card colour themes ──────────────────────────────────────   theme-0  Basic    : dark steel    #37474f / light bg #eceff1
    theme-1  Advanced : emerald green #059669 / light bg #e6f7f1
    theme-2  Core     : deep violet   #4f46e5 / light bg #eeedfb

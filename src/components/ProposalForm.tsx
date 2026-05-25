@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import type { Plan, PlanFeature, PlanRate, ProposalData } from '../types';
+import { hasRateAnalysisData, calcCurrentProcessing, calcProjectedProcessing } from '../utils';
 
 /** Controlled numeric input that allows typing values like 0.05 without swallowing zeros */
 function NumericInput({ value, onChange, ...props }: {
@@ -32,6 +33,10 @@ function NumericInput({ value, onChange, ...props }: {
       {...props}
     />
   );
+}
+
+function fmtCurr(n: number) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
 }
 
 interface Props {
@@ -261,16 +266,97 @@ export function ProposalForm({ data, onChange }: Props) {
         <div className="section-header">
           <h3>Processing Savings Calculator</h3>
         </div>
-        <p className="form-hint">Enter what the client currently pays — savings auto-fill on each plan.</p>
+
+        {/* Rate Analysis */}
+        <div className="ra-block">
+          <h4 className="ra-title">Rate Analysis</h4>
+          <p className="form-hint">Enter the data from the client's rate analysis to auto-calculate current and projected processing costs.</p>
+
+          <div className="rate-group-label">Visa / MC / Discover</div>
+          <div className="field-group">
+            <label>
+              Transactions
+              <NumericInput value={data.rateAnalysis.vmcTransactions} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, vmcTransactions: val })} min={0} />
+            </label>
+            <label>
+              Total Volume ($)
+              <NumericInput value={data.rateAnalysis.vmcVolume} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, vmcVolume: val })} min={0} />
+            </label>
+          </div>
+          <div className="field-group">
+            <label>
+              Current Rate (%)
+              <NumericInput value={data.rateAnalysis.vmcRate} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, vmcRate: val })} min={0} />
+            </label>
+            <label>
+              Per Transaction ($)
+              <NumericInput value={data.rateAnalysis.vmcPerTx} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, vmcPerTx: val })} min={0} />
+            </label>
+          </div>
+
+          <div className="rate-group-label">AMEX</div>
+          <div className="field-group">
+            <label>
+              Transactions
+              <NumericInput value={data.rateAnalysis.amexTransactions} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, amexTransactions: val })} min={0} />
+            </label>
+            <label>
+              Total Volume ($)
+              <NumericInput value={data.rateAnalysis.amexVolume} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, amexVolume: val })} min={0} />
+            </label>
+          </div>
+          <div className="field-group">
+            <label>
+              Current Rate (%)
+              <NumericInput value={data.rateAnalysis.amexRate} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, amexRate: val })} min={0} />
+            </label>
+            <label>
+              Per Transaction ($)
+              <NumericInput value={data.rateAnalysis.amexPerTx} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, amexPerTx: val })} min={0} />
+            </label>
+          </div>
+
+          {hasRateAnalysisData(data.rateAnalysis) && (() => {
+            const ra = data.rateAnalysis;
+            const vmcAvgTicket = ra.vmcTransactions > 0 ? ra.vmcVolume / ra.vmcTransactions : 0;
+            const amexAvgTicket = ra.amexTransactions > 0 ? ra.amexVolume / ra.amexTransactions : 0;
+            const currentProc = calcCurrentProcessing(ra);
+            return (
+              <div className="ra-summary">
+                {vmcAvgTicket > 0 && (
+                  <div className="ra-summary-row">
+                    <span>VMC Avg Ticket</span>
+                    <strong>{fmtCurr(vmcAvgTicket)}</strong>
+                  </div>
+                )}
+                {amexAvgTicket > 0 && (
+                  <div className="ra-summary-row">
+                    <span>Amex Avg Ticket</span>
+                    <strong>{fmtCurr(amexAvgTicket)}</strong>
+                  </div>
+                )}
+                <div className="ra-summary-row ra-summary-total">
+                  <span>Calculated Current Processing</span>
+                  <strong>{fmtCurr(currentProc)}/mo</strong>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+
+        <div className="calc-divider" />
+        <p className="form-hint">Monthly software cost — savings include both software and processing.</p>
         <div className="field-group">
           <label>
             Current Monthly Software ($)
             <NumericInput value={data.currentMonthly} onChange={(val) => set('currentMonthly', val)} min={0} />
           </label>
-          <label>
-            Current Monthly Processing ($)
-            <NumericInput value={data.currentProcessing} onChange={(val) => set('currentProcessing', val)} min={0} />
-          </label>
+          {!hasRateAnalysisData(data.rateAnalysis) && (
+            <label>
+              Current Monthly Processing ($)
+              <NumericInput value={data.currentProcessing} onChange={(val) => set('currentProcessing', val)} min={0} />
+            </label>
+          )}
         </div>
         <div className="calc-divider" />
         <p className="form-hint" style={{ marginTop: 4 }}>Current processing rate — shown on proposal for reference only.</p>
@@ -535,10 +621,24 @@ export function ProposalForm({ data, onChange }: Props) {
                 {data.companyName || 'SpotOn'} Monthly Software ($)
                 <NumericInput value={plan.spotonMonthly} onChange={(val) => updatePlan(plan.id, 'spotonMonthly', val)} min={0} />
               </label>
-              <label>
-                {data.companyName || 'SpotOn'} Monthly Processing ($)
-                <NumericInput value={plan.spotonProcessing} onChange={(val) => updatePlan(plan.id, 'spotonProcessing', val)} min={0} />
-              </label>
+              {(() => {
+                const projected = calcProjectedProcessing(plan.rate, data.rateAnalysis);
+                if (projected !== null) {
+                  return (
+                    <label className="calc-readonly-label">
+                      Projected Processing
+                      <div className="calc-readonly-value">{fmtCurr(projected)}/mo</div>
+                      <span className="calc-readonly-hint">auto-calculated from rate analysis</span>
+                    </label>
+                  );
+                }
+                return (
+                  <label>
+                    {data.companyName || 'SpotOn'} Monthly Processing ($)
+                    <NumericInput value={plan.spotonProcessing} onChange={(val) => updatePlan(plan.id, 'spotonProcessing', val)} min={0} />
+                  </label>
+                );
+              })()}
             </div>
 
             <div className="field-group">
@@ -548,12 +648,22 @@ export function ProposalForm({ data, onChange }: Props) {
               </label>
               <label className="calc-readonly-label">
                 Total Monthly Savings
-                <div className="calc-readonly-value">
-                  {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(
-                    (data.currentMonthly - plan.spotonMonthly) + (data.currentProcessing - plan.spotonProcessing)
-                  )}/mo
-                </div>
-                <span className="calc-readonly-hint">software + processing savings</span>
+                {(() => {
+                  const currentProc = hasRateAnalysisData(data.rateAnalysis)
+                    ? calcCurrentProcessing(data.rateAnalysis)
+                    : data.currentProcessing;
+                  const projected = calcProjectedProcessing(plan.rate, data.rateAnalysis);
+                  const planProc = projected !== null ? projected : plan.spotonProcessing;
+                  const savings = (data.currentMonthly - plan.spotonMonthly) + (currentProc - planProc);
+                  return (
+                    <>
+                      <div className="calc-readonly-value">
+                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(savings)}/mo
+                      </div>
+                      <span className="calc-readonly-hint">software + processing savings</span>
+                    </>
+                  );
+                })()}
               </label>
             </div>
           </div>

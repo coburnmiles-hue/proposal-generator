@@ -43,6 +43,17 @@ export interface Plan {
   features: PlanFeature[];
 }
 
+export interface RateAnalysis {
+  vmcTransactions: number;
+  vmcVolume: number;
+  vmcRate: number;   // percentage, e.g. 2.5 for 2.5%
+  vmcPerTx: number;  // dollar amount per transaction
+  amexTransactions: number;
+  amexVolume: number;
+  amexRate: number;
+  amexPerTx: number;
+}
+
 export interface ProposalData {
   clientName: string;
   clientCompany: string;
@@ -52,6 +63,7 @@ export interface ProposalData {
   currentMonthly: number;
   currentProcessing: number;
   currentRate: PlanRate;
+  rateAnalysis: RateAnalysis;
   features: Feature[];
   plans: Plan[];
 }
