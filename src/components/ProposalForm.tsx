@@ -193,7 +193,7 @@ export function ProposalForm({ data, onChange }: Props) {
             contents: [{
               parts: [
                 {
-                  text: 'This is a payment processing rate analysis. Return ONLY a raw JSON object (no markdown, no explanation):\n{"vmcTransactions": <integer: transaction count from Transaction Fee row for Visa/MC/Discover>, "vmcVolume": <float: total dollar volume from Total Visa/MC/Discover row>, "vmcCurrentCost": <float: total current cost from Total Visa/MC/Discover row>, "amexTransactions": <integer: transaction count from Transaction Fee row for AMEX>, "amexVolume": <float: total dollar volume from Total AMEX row>, "amexCurrentCost": <float: total current cost from Total AMEX row>}\nIgnore ATM and any other card types. Use 0 for any value not found.',
+                  text: 'This is a payment processing rate analysis. Return ONLY a raw JSON object (no markdown, no explanation):\n{"vmcTransactions": <integer: transaction count from Transaction Fee row for Visa/MC/Discover>, "vmcVolume": <float: total dollar volume from Total Visa/MC/Discover row>, "vmcCurrentCost": <float: total current cost from Total Visa/MC/Discover row>, "amexTransactions": <integer: transaction count from Transaction Fee row for AMEX>, "amexVolume": <float: total dollar volume from Total AMEX row>, "amexCurrentCost": <float: total current cost from Total AMEX row>, "atmTransactions": <integer: transaction count from Transaction Fee row for ATM/PIN Debit>, "atmVolume": <float: total dollar volume from Total ATM/PIN Debit row>, "atmCurrentCost": <float: total current cost from Total ATM/PIN Debit row>}\nUse 0 for any value not found.',
                 },
                 { inline_data: { mime_type: mimeType, data: base64Data } },
               ],
@@ -220,14 +220,17 @@ export function ProposalForm({ data, onChange }: Props) {
       const amexTx  = Math.round(Number(p.amexTransactions) || 0);
       const amexVol = Number(p.amexVolume)      || 0;
       const amexCost= Number(p.amexCurrentCost) || 0;
+      const atmTx   = Math.round(Number(p.atmTransactions)  || 0);
+      const atmVol  = Number(p.atmVolume)       || 0;
+      const atmCost = Number(p.atmCurrentCost)  || 0;
 
       onChange({
         ...data,
-        rateAnalysis: { vmcTransactions: vmcTx, vmcVolume: vmcVol, amexTransactions: amexTx, amexVolume: amexVol },
-        currentProcessing: Math.round((vmcCost + amexCost) * 100) / 100,
+        rateAnalysis: { vmcTransactions: vmcTx, vmcVolume: vmcVol, amexTransactions: amexTx, amexVolume: amexVol, atmTransactions: atmTx, atmVolume: atmVol },
+        currentProcessing: Math.round((vmcCost + amexCost + atmCost) * 100) / 100,
       });
 
-      setParseMsg({ type: 'success', text: `Auto-filled — V/MC/D: ${vmcTx.toLocaleString()} tx · ${fmtCurr(vmcVol)}  |  Amex: ${amexTx.toLocaleString()} tx · ${fmtCurr(amexVol)}  |  Current processing: ${fmtCurr(vmcCost + amexCost)}/mo` });
+      setParseMsg({ type: 'success', text: `Auto-filled — V/MC/D: ${vmcTx.toLocaleString()} tx · ${fmtCurr(vmcVol)}  |  Amex: ${amexTx.toLocaleString()} tx · ${fmtCurr(amexVol)}  |  ATM: ${atmTx.toLocaleString()} tx · ${fmtCurr(atmVol)}  |  Current processing: ${fmtCurr(vmcCost + amexCost + atmCost)}/mo` });
     } catch (err) {
       setParseMsg({ type: 'error', text: err instanceof Error ? err.message : 'Unexpected error.' });
     } finally {
@@ -436,10 +439,23 @@ export function ProposalForm({ data, onChange }: Props) {
             </label>
           </div>
 
+          <div className="rate-group-label">ATM / PIN Debit</div>
+          <div className="field-group">
+            <label>
+              Transactions
+              <NumericInput value={data.rateAnalysis.atmTransactions} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, atmTransactions: val })} min={0} />
+            </label>
+            <label>
+              Total Volume ($)
+              <NumericInput value={data.rateAnalysis.atmVolume} onChange={(val) => set('rateAnalysis', { ...data.rateAnalysis, atmVolume: val })} min={0} />
+            </label>
+          </div>
+
           {hasRateAnalysisData(data.rateAnalysis) && (() => {
             const ra = data.rateAnalysis;
             const vmcAvgTicket = ra.vmcTransactions > 0 ? ra.vmcVolume / ra.vmcTransactions : 0;
             const amexAvgTicket = ra.amexTransactions > 0 ? ra.amexVolume / ra.amexTransactions : 0;
+            const atmAvgTicket = ra.atmTransactions > 0 ? ra.atmVolume / ra.atmTransactions : 0;
             return (
               <div className="ra-summary">
                 {vmcAvgTicket > 0 && (
@@ -447,6 +463,9 @@ export function ProposalForm({ data, onChange }: Props) {
                 )}
                 {amexAvgTicket > 0 && (
                   <div className="ra-summary-row"><span>Amex Avg Ticket</span><strong>{fmtCurr(amexAvgTicket)}</strong></div>
+                )}
+                {atmAvgTicket > 0 && (
+                  <div className="ra-summary-row"><span>ATM Avg Ticket</span><strong>{fmtCurr(atmAvgTicket)}</strong></div>
                 )}
               </div>
             );

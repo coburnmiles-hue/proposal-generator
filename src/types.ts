@@ -48,6 +48,8 @@ export interface RateAnalysis {
   vmcVolume: number;
   amexTransactions: number;
   amexVolume: number;
+  atmTransactions: number;
+  atmVolume: number;
 }
 
 export interface ProposalData {

@@ -77,6 +77,8 @@ const DEFAULT_RATE_ANALYSIS = {
   vmcVolume: 0,
   amexTransactions: 0,
   amexVolume: 0,
+  atmTransactions: 0,
+  atmVolume: 0,
 };
 
 const defaultData: ProposalData = {
@@ -136,7 +138,7 @@ function App() {
     const loaded: ProposalData = {
       ...entry.data,
       rateAnalysis: ra
-        ? { vmcTransactions: ra.vmcTransactions ?? 0, vmcVolume: ra.vmcVolume ?? 0, amexTransactions: ra.amexTransactions ?? 0, amexVolume: ra.amexVolume ?? 0 }
+        ? { vmcTransactions: ra.vmcTransactions ?? 0, vmcVolume: ra.vmcVolume ?? 0, amexTransactions: ra.amexTransactions ?? 0, amexVolume: ra.amexVolume ?? 0, atmTransactions: ra.atmTransactions ?? 0, atmVolume: ra.atmVolume ?? 0 }
         : DEFAULT_RATE_ANALYSIS,
     };
     setData(loaded);

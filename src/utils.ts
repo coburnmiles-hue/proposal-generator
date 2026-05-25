@@ -3,7 +3,7 @@ import type { PlanRate, RateAnalysis } from './types';
 /** True when rate analysis has enough volume data to drive calculations */
 export function hasRateAnalysisData(ra: RateAnalysis | null | undefined): boolean {
   if (!ra) return false;
-  return ra.vmcVolume > 0 || ra.amexVolume > 0;
+  return ra.vmcVolume > 0 || ra.amexVolume > 0 || ra.atmVolume > 0;
 }
 
 /**
@@ -17,8 +17,8 @@ export function calcProjectedProcessing(rate: PlanRate, ra: RateAnalysis | null 
   if (!hasRateAnalysisData(ra)) return null;
   const r = ra!;
 
-  const totalVolume = r.vmcVolume + r.amexVolume;
-  const totalTx = r.vmcTransactions + r.amexTransactions;
+  const totalVolume = r.vmcVolume + r.amexVolume + r.atmVolume;
+  const totalTx = r.vmcTransactions + r.amexTransactions + r.atmTransactions;
 
   switch (rate.type) {
     case 'flat':
@@ -30,7 +30,9 @@ export function calcProjectedProcessing(rate: PlanRate, ra: RateAnalysis | null 
         r.vmcVolume * (rate.vmcPercentage / 100) +
         r.vmcTransactions * rate.vmcPerTx +
         r.amexVolume * (rate.amexPercentage / 100) +
-        r.amexTransactions * rate.amexPerTx
+        r.amexTransactions * rate.amexPerTx +
+        r.atmVolume * (rate.vmcPercentage / 100) +
+        r.atmTransactions * rate.vmcPerTx
       );
 
     case 'tiered': {
@@ -41,7 +43,9 @@ export function calcProjectedProcessing(rate: PlanRate, ra: RateAnalysis | null 
         r.vmcVolume * (vmcAvg / 100) +
         r.vmcTransactions * rate.vmcPerTx +
         r.amexVolume * (amexAvg / 100) +
-        r.amexTransactions * rate.amexPerTx
+        r.amexTransactions * rate.amexPerTx +
+        r.atmVolume * (vmcAvg / 100) +
+        r.atmTransactions * rate.vmcPerTx
       );
     }
 
