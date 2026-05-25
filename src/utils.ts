@@ -1,10 +1,5 @@
 import type { PlanRate, RateAnalysis } from './types';
 
-const EMPTY_RA: RateAnalysis = {
-  vmcTransactions: 0, vmcVolume: 0,
-  amexTransactions: 0, amexVolume: 0,
-};
-
 /** True when rate analysis has enough volume data to drive calculations */
 export function hasRateAnalysisData(ra: RateAnalysis | null | undefined): boolean {
   if (!ra) return false;
