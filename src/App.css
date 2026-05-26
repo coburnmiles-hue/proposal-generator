@@ -973,6 +973,14 @@ textarea { resize: vertical; }
   margin-top: 2px;
 }
 
+.rate-optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-style: italic;
+  opacity: 0.75;
+}
+
 /* ── Rate Analysis block ─────────────────────────────────────── */
 .ra-block {
   display: flex;

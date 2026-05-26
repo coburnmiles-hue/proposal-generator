@@ -17,6 +17,8 @@ export interface PlanRate {
   /** Interchange+ */
   basisPoints: number;
   interchangePerTx: number;
+  amexBasisPoints: number;
+  amexInterchangePerTx: number;
   /** Flat */
   flatPercentage: number;
   flatPerTx: number;

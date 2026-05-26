@@ -108,9 +108,50 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
           </span>
           <div className="dcr-details">
             {data.currentRate.type === 'interchange+' && (
-              <span>{data.currentRate.basisPoints} bps + ${data.currentRate.interchangePerTx.toFixed(2)}</span>
+              (data.currentRate.amexBasisPoints > 0 || data.currentRate.amexInterchangePerTx > 0) ? (
+                <div className="dcr-two-col">
+                  <div className="dcr-col">
+                    <div className="dcr-col-icons">
+                      <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                      <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                      <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                    </div>
+                    <span>{data.currentRate.basisPoints} bps + ${data.currentRate.interchangePerTx.toFixed(2)}</span>
+                  </div>
+                  <div className="dcr-col">
+                    <div className="dcr-col-icons">
+                      <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                    </div>
+                    <span>{data.currentRate.amexBasisPoints} bps + ${data.currentRate.amexInterchangePerTx.toFixed(2)}</span>
+                  </div>
+                </div>
+              ) : (
+                <span>{data.currentRate.basisPoints} bps + ${data.currentRate.interchangePerTx.toFixed(2)}</span>
+              )
             )}
-            {(data.currentRate.type === 'flat' || data.currentRate.type === 'dual-pricing') && (
+            {data.currentRate.type === 'flat' && (
+              (data.currentRate.amexPercentage > 0 || data.currentRate.amexPerTx > 0) ? (
+                <div className="dcr-two-col">
+                  <div className="dcr-col">
+                    <div className="dcr-col-icons">
+                      <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                      <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                      <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                    </div>
+                    <span>{data.currentRate.flatPercentage.toFixed(2)}% + ${data.currentRate.flatPerTx.toFixed(2)}</span>
+                  </div>
+                  <div className="dcr-col">
+                    <div className="dcr-col-icons">
+                      <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                    </div>
+                    <span>{data.currentRate.amexPercentage.toFixed(2)}% + ${data.currentRate.amexPerTx.toFixed(2)}</span>
+                  </div>
+                </div>
+              ) : (
+                <span>{data.currentRate.flatPercentage.toFixed(2)}% + ${data.currentRate.flatPerTx.toFixed(2)}</span>
+              )
+            )}
+            {data.currentRate.type === 'dual-pricing' && (
               <span>{data.currentRate.flatPercentage.toFixed(2)}% + ${data.currentRate.flatPerTx.toFixed(2)}</span>
             )}
             {data.currentRate.type === 'tiered-simple' && (
@@ -180,10 +221,48 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   </span>
                   <div className="card-rate-details">
                     {plan.rate.type === 'interchange+' && (
-                      <span>{plan.rate.basisPoints} bps + ${plan.rate.interchangePerTx.toFixed(2)}</span>
+                      (plan.rate.amexBasisPoints > 0 || plan.rate.amexInterchangePerTx > 0) ? (
+                        <>
+                          <div className="card-rate-brand-row">
+                            <span className="card-rate-brand-icons">
+                              <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                              <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                              <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                            </span>
+                            <span>{plan.rate.basisPoints} bps + ${plan.rate.interchangePerTx.toFixed(2)}</span>
+                          </div>
+                          <div className="card-rate-brand-row">
+                            <span className="card-rate-brand-icons">
+                              <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                            </span>
+                            <span>{plan.rate.amexBasisPoints} bps + ${plan.rate.amexInterchangePerTx.toFixed(2)}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <span>{plan.rate.basisPoints} bps + ${plan.rate.interchangePerTx.toFixed(2)}</span>
+                      )
                     )}
                     {plan.rate.type === 'flat' && (
-                      <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}</span>
+                      (plan.rate.amexPercentage > 0 || plan.rate.amexPerTx > 0) ? (
+                        <>
+                          <div className="card-rate-brand-row">
+                            <span className="card-rate-brand-icons">
+                              <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                              <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                              <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                            </span>
+                            <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}</span>
+                          </div>
+                          <div className="card-rate-brand-row">
+                            <span className="card-rate-brand-icons">
+                              <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                            </span>
+                            <span>{plan.rate.amexPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}</span>
+                      )
                     )}
                     {plan.rate.type === 'dual-pricing' && (
                       <span>{plan.rate.flatPercentage.toFixed(2)}% + ${plan.rate.flatPerTx.toFixed(2)}</span>

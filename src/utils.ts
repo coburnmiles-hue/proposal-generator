@@ -21,9 +21,19 @@ export function calcProjectedProcessing(rate: PlanRate, ra: RateAnalysis | null 
   const totalTx = r.vmcTransactions + r.amexTransactions + r.atmTransactions;
 
   switch (rate.type) {
-    case 'flat':
     case 'dual-pricing':
       return totalVolume * (rate.flatPercentage / 100) + totalTx * rate.flatPerTx;
+
+    case 'flat': {
+      const hasAmexRate = rate.amexPercentage > 0 || rate.amexPerTx > 0;
+      if (hasAmexRate) {
+        const vmcAtmVol = r.vmcVolume + r.atmVolume;
+        const vmcAtmTx = r.vmcTransactions + r.atmTransactions;
+        return vmcAtmVol * (rate.flatPercentage / 100) + vmcAtmTx * rate.flatPerTx
+             + r.amexVolume * (rate.amexPercentage / 100) + r.amexTransactions * rate.amexPerTx;
+      }
+      return totalVolume * (rate.flatPercentage / 100) + totalTx * rate.flatPerTx;
+    }
 
     case 'tiered-simple':
       return (

@@ -96,6 +96,7 @@ export function ProposalForm({ data, onChange }: Props) {
       rate: {
         type: 'interchange+',
         basisPoints: 0, interchangePerTx: 0,
+        amexBasisPoints: 0, amexInterchangePerTx: 0,
         flatPercentage: 0, flatPerTx: 0,
         vmcPercentage: 0, vmcPerTx: 0,
         amexPercentage: 0, amexPerTx: 0,
@@ -501,24 +502,50 @@ export function ProposalForm({ data, onChange }: Props) {
             </select>
           </label>
           {data.currentRate.type === 'interchange+' && (
-            <div className="field-group">
-              <label>Basis Points
-                <NumericInput value={data.currentRate.basisPoints} onChange={(val) => set('currentRate', { ...data.currentRate, basisPoints: val })} min={0} />
-              </label>
-              <label>Per Transaction ($)
-                <NumericInput value={data.currentRate.interchangePerTx} onChange={(val) => set('currentRate', { ...data.currentRate, interchangePerTx: val })} min={0} />
-              </label>
-            </div>
+            <>
+              <div className="rate-group-label">Visa / MC / Discover</div>
+              <div className="field-group">
+                <label>Basis Points
+                  <NumericInput value={data.currentRate.basisPoints} onChange={(val) => set('currentRate', { ...data.currentRate, basisPoints: val })} min={0} />
+                </label>
+                <label>Per Transaction ($)
+                  <NumericInput value={data.currentRate.interchangePerTx} onChange={(val) => set('currentRate', { ...data.currentRate, interchangePerTx: val })} min={0} />
+                </label>
+              </div>
+              <div className="rate-group-label">AMEX <span className="rate-optional">(optional)</span></div>
+              <div className="field-group">
+                <label>Basis Points
+                  <NumericInput value={data.currentRate.amexBasisPoints ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, amexBasisPoints: val })} min={0} />
+                </label>
+                <label>Per Transaction ($)
+                  <NumericInput value={data.currentRate.amexInterchangePerTx ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, amexInterchangePerTx: val })} min={0} />
+                </label>
+              </div>
+              <p className="form-hint">Leave AMEX at 0 to use V/MC/Disc rates for Amex</p>
+            </>
           )}
           {data.currentRate.type === 'flat' && (
-            <div className="field-group">
-              <label>Percentage (%)
-                <NumericInput value={data.currentRate.flatPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, flatPercentage: val })} min={0} />
-              </label>
-              <label>Per Transaction ($)
-                <NumericInput value={data.currentRate.flatPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, flatPerTx: val })} min={0} />
-              </label>
-            </div>
+            <>
+              <div className="rate-group-label">Visa / MC / Discover</div>
+              <div className="field-group">
+                <label>Percentage (%)
+                  <NumericInput value={data.currentRate.flatPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, flatPercentage: val })} min={0} />
+                </label>
+                <label>Per Transaction ($)
+                  <NumericInput value={data.currentRate.flatPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, flatPerTx: val })} min={0} />
+                </label>
+              </div>
+              <div className="rate-group-label">AMEX <span className="rate-optional">(optional)</span></div>
+              <div className="field-group">
+                <label>Percentage (%)
+                  <NumericInput value={data.currentRate.amexPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, amexPercentage: val })} min={0} />
+                </label>
+                <label>Per Transaction ($)
+                  <NumericInput value={data.currentRate.amexPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, amexPerTx: val })} min={0} />
+                </label>
+              </div>
+              <p className="form-hint">Leave AMEX at 0 to use V/MC/Disc rates for Amex</p>
+            </>
           )}
           {data.currentRate.type === 'dual-pricing' && (
             <div className="field-group">
@@ -637,29 +664,59 @@ export function ProposalForm({ data, onChange }: Props) {
               </label>
 
               {plan.rate.type === 'interchange+' && (
-                <div className="field-group">
-                  <label>
-                    Basis Points
-                    <NumericInput value={plan.rate.basisPoints} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, basisPoints: val })} min={0} />
-                  </label>
-                  <label>
-                    Per Transaction ($)
-                    <NumericInput value={plan.rate.interchangePerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, interchangePerTx: val })} min={0} />
-                  </label>
-                </div>
+                <>
+                  <div className="rate-group-label">Visa / MC / Discover</div>
+                  <div className="field-group">
+                    <label>
+                      Basis Points
+                      <NumericInput value={plan.rate.basisPoints} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, basisPoints: val })} min={0} />
+                    </label>
+                    <label>
+                      Per Transaction ($)
+                      <NumericInput value={plan.rate.interchangePerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, interchangePerTx: val })} min={0} />
+                    </label>
+                  </div>
+                  <div className="rate-group-label">AMEX <span className="rate-optional">(optional)</span></div>
+                  <div className="field-group">
+                    <label>
+                      Basis Points
+                      <NumericInput value={plan.rate.amexBasisPoints ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexBasisPoints: val })} min={0} />
+                    </label>
+                    <label>
+                      Per Transaction ($)
+                      <NumericInput value={plan.rate.amexInterchangePerTx ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexInterchangePerTx: val })} min={0} />
+                    </label>
+                  </div>
+                  <p className="form-hint">Leave AMEX at 0 to use V/MC/Disc rates for Amex</p>
+                </>
               )}
 
               {plan.rate.type === 'flat' && (
-                <div className="field-group">
-                  <label>
-                    Percentage (%)
-                    <NumericInput value={plan.rate.flatPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: val })} min={0} />
-                  </label>
-                  <label>
-                    Per Transaction ($)
-                    <NumericInput value={plan.rate.flatPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: val })} min={0} />
-                  </label>
-                </div>
+                <>
+                  <div className="rate-group-label">Visa / MC / Discover</div>
+                  <div className="field-group">
+                    <label>
+                      Percentage (%)
+                      <NumericInput value={plan.rate.flatPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: val })} min={0} />
+                    </label>
+                    <label>
+                      Per Transaction ($)
+                      <NumericInput value={plan.rate.flatPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: val })} min={0} />
+                    </label>
+                  </div>
+                  <div className="rate-group-label">AMEX <span className="rate-optional">(optional)</span></div>
+                  <div className="field-group">
+                    <label>
+                      Percentage (%)
+                      <NumericInput value={plan.rate.amexPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPercentage: val })} min={0} />
+                    </label>
+                    <label>
+                      Per Transaction ($)
+                      <NumericInput value={plan.rate.amexPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPerTx: val })} min={0} />
+                    </label>
+                  </div>
+                  <p className="form-hint">Leave AMEX at 0 to use V/MC/Disc rates for Amex</p>
+                </>
               )}
 
               {plan.rate.type === 'dual-pricing' && (

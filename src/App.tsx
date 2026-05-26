@@ -49,6 +49,8 @@ const DEFAULT_RATE = {
   type: 'interchange+' as const,
   basisPoints: 0,
   interchangePerTx: 0,
+  amexBasisPoints: 0,
+  amexInterchangePerTx: 0,
   flatPercentage: 0,
   flatPerTx: 0,
   vmcPercentage: 0,
@@ -92,6 +94,7 @@ const defaultData: ProposalData = {
   currentRate: {
     type: 'interchange+' as const,
     basisPoints: 0, interchangePerTx: 0,
+    amexBasisPoints: 0, amexInterchangePerTx: 0,
     flatPercentage: 0, flatPerTx: 0,
     vmcPercentage: 0, vmcPerTx: 0,
     amexPercentage: 0, amexPerTx: 0,
