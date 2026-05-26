@@ -236,6 +236,12 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     <span className="cs-label">Monthly Software</span>
                     <span className="cs-amount cs-spoton">{fmt(plan.spotonMonthly)}</span>
                   </div>
+                  {plan.rate.type === 'dual-pricing' && (
+                    <div className="card-summary-row">
+                      <span className="cs-label">Monthly Processing</span>
+                      <span className="cs-amount cs-spoton">$0.00*</span>
+                    </div>
+                  )}
                   <div className="card-summary-row">
                     <span className="cs-label">Current Software</span>
                     <span className="cs-amount cs-current">{fmt(data.currentMonthly)}</span>
@@ -254,7 +260,9 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   {(() => {
                     const currentProc = data.currentProcessing;
                     const projected = calcProjectedProcessing(plan.rate, data.rateAnalysis);
-                    const planProc = projected !== null ? projected : plan.spotonProcessing;
+                    const planProc = plan.rate.type === 'dual-pricing'
+                      ? 0
+                      : (projected !== null ? projected : plan.spotonProcessing);
                     const monthly = (data.currentMonthly - plan.spotonMonthly) + (currentProc - planProc);
                     return (
                       <>
@@ -273,6 +281,13 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Dual-pricing footnote */}
+      {data.plans.some((p) => p.rate.type === 'dual-pricing') && (
+        <div className="doc-footnote">
+          * Based upon menu item price increase by the percentage amount
         </div>
       )}
 

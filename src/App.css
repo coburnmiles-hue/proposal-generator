@@ -723,6 +723,15 @@ textarea { resize: vertical; }
   padding: 48px 0;
 }
 
+.doc-footnote {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-light);
+  font-style: italic;
+}
+
 /* Prepared for intro */
 .doc-intro {
   background: var(--navy);
