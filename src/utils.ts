@@ -59,6 +59,16 @@ export function calcProjectedProcessing(rate: PlanRate, ra: RateAnalysis | null 
       );
     }
 
+    case 'surcharging':
+      return (
+        r.vmcVolume * (rate.vmcQualPercentage / 100) +
+        r.vmcTransactions * rate.vmcPerTx +
+        r.amexVolume * (rate.amexQualPercentage / 100) +
+        r.amexTransactions * rate.amexPerTx +
+        r.atmVolume * (rate.debitQualPercentage / 100) +
+        r.atmTransactions * rate.debitQualPerTx
+      );
+
     // Interchange+ — interchange itself is a pass-through that varies by card;
     // we cannot compute the total without knowing the underlying interchange cost.
     case 'interchange+':

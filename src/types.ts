@@ -10,7 +10,7 @@ export interface PlanFeature {
   currentIncluded: boolean;
 }
 
-export type RateType = 'interchange+' | 'flat' | 'dual-pricing' | 'tiered-simple' | 'tiered';
+export type RateType = 'interchange+' | 'flat' | 'dual-pricing' | 'tiered-simple' | 'tiered' | 'surcharging';
 
 export interface PlanRate {
   type: RateType;
@@ -32,6 +32,9 @@ export interface PlanRate {
   vmcQualPercentage: number;
   amexNonQualPercentage: number;
   amexQualPercentage: number;
+  /** Surcharging */
+  debitQualPercentage: number;
+  debitQualPerTx: number;
 }
 
 export interface Plan {

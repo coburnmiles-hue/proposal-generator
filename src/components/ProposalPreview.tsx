@@ -104,6 +104,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
               : data.currentRate.type === 'flat' ? 'Flat Rate'
               : data.currentRate.type === 'dual-pricing' ? 'Dual Pricing'
               : data.currentRate.type === 'tiered-simple' ? 'Tiered'
+              : data.currentRate.type === 'surcharging' ? 'Surcharging'
               : 'Tiered'}
           </span>
           <div className="dcr-details">
@@ -194,6 +195,28 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                 </div>
               </div>
             )}
+            {data.currentRate.type === 'surcharging' && (
+              <div className="dcr-two-col">
+                <div className="dcr-col">
+                  <div className="dcr-col-icons">
+                    <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                  </div>
+                  <span>Qual: {data.currentRate.vmcQualPercentage.toFixed(2)}% + ${data.currentRate.vmcPerTx.toFixed(2)}</span>
+                </div>
+                <div className="dcr-col">
+                  <div className="dcr-col-icons">
+                    <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                  </div>
+                  <span>Qual: {data.currentRate.amexQualPercentage.toFixed(2)}% + ${data.currentRate.amexPerTx.toFixed(2)}</span>
+                </div>
+                <div className="dcr-col">
+                  <span className="dcr-col-label">Debit</span>
+                  <span>Qual: {(data.currentRate.debitQualPercentage ?? 0).toFixed(2)}% + ${(data.currentRate.debitQualPerTx ?? 0).toFixed(2)}</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -217,6 +240,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                       : plan.rate.type === 'flat' ? 'Flat Rate'
                       : plan.rate.type === 'dual-pricing' ? 'Dual Pricing'
                       : plan.rate.type === 'tiered-simple' ? 'Tiered'
+                      : plan.rate.type === 'surcharging' ? 'Surcharging'
                       : 'Tiered'}
                   </span>
                   <div className="card-rate-details">
@@ -304,6 +328,28 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                           <span>Non-Qual: {plan.rate.amexNonQualPercentage.toFixed(2)}%</span>
                           <span>Qual: {plan.rate.amexQualPercentage.toFixed(2)}%</span>
                           <span>Per Trans: ${plan.rate.amexPerTx.toFixed(2)}</span>
+                        </div>
+                      </>
+                    )}
+                    {plan.rate.type === 'surcharging' && (
+                      <>
+                        <div className="card-rate-brand-row">
+                          <span className="card-rate-brand-icons">
+                            <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                            <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                            <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                          </span>
+                          <span>Qual: {plan.rate.vmcQualPercentage.toFixed(2)}% + ${plan.rate.vmcPerTx.toFixed(2)}</span>
+                        </div>
+                        <div className="card-rate-brand-row">
+                          <span className="card-rate-brand-icons">
+                            <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                          </span>
+                          <span>Qual: {plan.rate.amexQualPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}</span>
+                        </div>
+                        <div className="card-rate-brand-row">
+                          <span className="card-rate-brand-label">Debit</span>
+                          <span>Qual: {(plan.rate.debitQualPercentage ?? 0).toFixed(2)}% + ${(plan.rate.debitQualPerTx ?? 0).toFixed(2)}</span>
                         </div>
                       </>
                     )}

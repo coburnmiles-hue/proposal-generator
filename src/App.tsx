@@ -61,6 +61,8 @@ const DEFAULT_RATE = {
   vmcQualPercentage: 0,
   amexNonQualPercentage: 0,
   amexQualPercentage: 0,
+  debitQualPercentage: 0,
+  debitQualPerTx: 0,
 };
 
 const makeDefaultPlan = (name: string, features: typeof DEFAULT_FEATURES) => ({
@@ -100,6 +102,7 @@ const defaultData: ProposalData = {
     amexPercentage: 0, amexPerTx: 0,
     vmcNonQualPercentage: 0, vmcQualPercentage: 0,
     amexNonQualPercentage: 0, amexQualPercentage: 0,
+    debitQualPercentage: 0, debitQualPerTx: 0,
   },
   rateAnalysis: DEFAULT_RATE_ANALYSIS,
   features: DEFAULT_FEATURES,
