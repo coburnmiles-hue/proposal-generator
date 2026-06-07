@@ -1017,16 +1017,6 @@ export function ProposalForm({ data, onChange }: Props) {
                 <NumericInput value={plan.spotonMonthly} onChange={(val) => updatePlan(plan.id, 'spotonMonthly', val)} min={0} />
               </label>
               {(() => {
-                const projected = calcProjectedProcessing(plan.rate, data.rateAnalysis);
-                if (projected !== null) {
-                  return (
-                    <label className="calc-readonly-label">
-                      {data.companyName || 'SpotOn'} Monthly Processing
-                      <div className="calc-readonly-value">{fmtCurr(projected)}/mo</div>
-                      <span className="calc-readonly-hint">auto-calculated from rate analysis</span>
-                    </label>
-                  );
-                }
                 return (
                   <label>
                     {data.companyName || 'SpotOn'} Monthly Processing ($)
@@ -1045,8 +1035,7 @@ export function ProposalForm({ data, onChange }: Props) {
                 Total Monthly Savings
                 {(() => {
                   const currentProc = data.currentProcessing;
-                  const projected = calcProjectedProcessing(plan.rate, data.rateAnalysis);
-                  const planProc = projected !== null ? projected : plan.spotonProcessing;
+                  const planProc = plan.spotonProcessing;
                   const savings = (data.currentMonthly - plan.spotonMonthly) + (currentProc - planProc);
                   return (
                     <>
