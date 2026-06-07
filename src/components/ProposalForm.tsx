@@ -103,6 +103,8 @@ export function ProposalForm({ data, onChange }: Props) {
         vmcNonQualPercentage: 0, vmcQualPercentage: 0,
         amexNonQualPercentage: 0, amexQualPercentage: 0,
         debitQualPercentage: 0, debitQualPerTx: 0,
+        vmcNonQualPerTx: 0, amexNonQualPerTx: 0,
+        debitNonQualPercentage: 0, debitNonQualPerTx: 0,
       },
       spotonMonthly: 0,
       spotonProcessing: 0,
