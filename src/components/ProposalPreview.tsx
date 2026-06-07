@@ -416,7 +416,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                 <div className="card-footer-savings">
                   {(() => {
                     const currentProc = data.currentProcessing;
-                    const planProc = plan.rate.type === 'dual-pricing' ? 0 : plan.spotonProcessing;
+                    const planProc = plan.spotonProcessing;
                     const monthly = (data.currentMonthly - plan.spotonMonthly) + (currentProc - planProc);
                     return (
                       <>
