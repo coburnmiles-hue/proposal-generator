@@ -875,6 +875,27 @@ textarea { resize: vertical; }
 .dcr-details strong {
   font-weight: 700;
 }
+.dcr-effective-rate {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px dashed #f5c0cb;
+  padding-top: 6px;
+  margin-top: 2px;
+}
+.dcr-effective-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand);
+}
+.dcr-effective-value {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--brand);
+}
 
 /* Two-column layout in current rate block */
 .dcr-two-col {
@@ -903,6 +924,7 @@ textarea { resize: vertical; }
 .fa-cc-mastercard { color: #EB001B; }
 .fa-cc-discover   { color: #E65C00; }
 .fa-cc-amex       { color: #007BC1; }
+.debit-icon       { color: #4a6fa5; }
 
 /* Plan card brand rows */
 .card-rate-brand-row {
@@ -979,6 +1001,16 @@ textarea { resize: vertical; }
   letter-spacing: 0;
   font-style: italic;
   opacity: 0.75;
+}
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-dark);
+  cursor: pointer;
+  margin-top: 2px;
 }
 
 /* ── Rate Analysis block ─────────────────────────────────────── */
@@ -1319,6 +1351,14 @@ textarea { resize: vertical; }
   font-weight: 800;
   color: var(--white);
   letter-spacing: -0.5px;
+}
+
+.card-disclaimer {
+  font-size: 9px;
+  color: rgba(0,0,0,0.45);
+  padding: 5px 14px 6px;
+  text-align: center;
+  font-style: italic;
 }
 
 /* ===== Shared feature table (below cards) ===== */

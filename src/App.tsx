@@ -63,6 +63,10 @@ const DEFAULT_RATE = {
   amexQualPercentage: 0,
   debitQualPercentage: 0,
   debitQualPerTx: 0,
+  vmcNonQualPerTx: 0,
+  amexNonQualPerTx: 0,
+  debitNonQualPercentage: 0,
+  debitNonQualPerTx: 0,
 };
 
 const makeDefaultPlan = (name: string, features: typeof DEFAULT_FEATURES) => ({
@@ -94,7 +98,7 @@ const defaultData: ProposalData = {
   currentMonthly: 0,
   currentProcessing: 0,
   currentRate: {
-    type: 'interchange+' as const,
+    type: 'none' as const,
     basisPoints: 0, interchangePerTx: 0,
     amexBasisPoints: 0, amexInterchangePerTx: 0,
     flatPercentage: 0, flatPerTx: 0,
@@ -103,6 +107,8 @@ const defaultData: ProposalData = {
     vmcNonQualPercentage: 0, vmcQualPercentage: 0,
     amexNonQualPercentage: 0, amexQualPercentage: 0,
     debitQualPercentage: 0, debitQualPerTx: 0,
+    vmcNonQualPerTx: 0, amexNonQualPerTx: 0,
+    debitNonQualPercentage: 0, debitNonQualPerTx: 0,
   },
   rateAnalysis: DEFAULT_RATE_ANALYSIS,
   features: DEFAULT_FEATURES,
@@ -111,6 +117,7 @@ const defaultData: ProposalData = {
     makeDefaultPlan('SpotOn Advanced', DEFAULT_FEATURES),
     makeDefaultPlan('SpotOn Core', DEFAULT_FEATURES),
   ],
+  currentEffectiveRate: 0,
 };
 
 function App() {

@@ -5,6 +5,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCcVisa, faCcMastercard, faCcDiscover, faCcAmex } from '@fortawesome/free-brands-svg-icons';
 import { calcProjectedProcessing } from '../utils';
 
+const DebitIcon = () => (
+  <svg className="brand-icon debit-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+    <rect x="0" y="0" width="24" height="24" rx="4" fill="#4A6FD4"/>
+    <rect x="0" y="8" width="24" height="8" fill="#1a1a1a"/>
+    <text x="12" y="15.5" textAnchor="middle" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="6.5" fill="white" letterSpacing="0.5">ATM</text>
+  </svg>
+);
+
 interface Props {
   data: ProposalData;
 }
@@ -96,7 +104,8 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
         data.currentRate.flatPercentage > 0 || data.currentRate.flatPerTx > 0 ||
         data.currentRate.vmcPercentage > 0 || data.currentRate.amexPercentage > 0 ||
         data.currentRate.vmcNonQualPercentage > 0 || data.currentRate.vmcQualPercentage > 0 ||
-        data.currentRate.amexNonQualPercentage > 0 || data.currentRate.amexQualPercentage > 0) && (
+        data.currentRate.amexNonQualPercentage > 0 || data.currentRate.amexQualPercentage > 0 ||
+        (data.currentEffectiveRate ?? 0) > 0) && (
         <div className="doc-current-rate">
           <span className="dcr-label">Current Rate</span>
           <span className="dcr-badge">
@@ -204,20 +213,37 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
                   </div>
                   <span>Qual: {data.currentRate.vmcQualPercentage.toFixed(2)}% + ${data.currentRate.vmcPerTx.toFixed(2)}</span>
+                  {(data.currentRate.vmcNonQualPercentage > 0 || (data.currentRate.vmcNonQualPerTx ?? 0) > 0) && (
+                    <span>Non-Qual: {data.currentRate.vmcNonQualPercentage.toFixed(2)}% + ${(data.currentRate.vmcNonQualPerTx ?? 0).toFixed(2)}</span>
+                  )}
                 </div>
                 <div className="dcr-col">
                   <div className="dcr-col-icons">
                     <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
                   </div>
                   <span>Qual: {data.currentRate.amexQualPercentage.toFixed(2)}% + ${data.currentRate.amexPerTx.toFixed(2)}</span>
+                  {(data.currentRate.amexNonQualPercentage > 0 || (data.currentRate.amexNonQualPerTx ?? 0) > 0) && (
+                    <span>Non-Qual: {data.currentRate.amexNonQualPercentage.toFixed(2)}% + ${(data.currentRate.amexNonQualPerTx ?? 0).toFixed(2)}</span>
+                  )}
                 </div>
                 <div className="dcr-col">
-                  <span className="dcr-col-label">Debit</span>
+                  <div className="dcr-col-icons">
+                    <DebitIcon />
+                  </div>
                   <span>Qual: {(data.currentRate.debitQualPercentage ?? 0).toFixed(2)}% + ${(data.currentRate.debitQualPerTx ?? 0).toFixed(2)}</span>
+                  {((data.currentRate.debitNonQualPercentage ?? 0) > 0 || (data.currentRate.debitNonQualPerTx ?? 0) > 0) && (
+                    <span>Non-Qual: {(data.currentRate.debitNonQualPercentage ?? 0).toFixed(2)}% + ${(data.currentRate.debitNonQualPerTx ?? 0).toFixed(2)}</span>
+                  )}
                 </div>
               </div>
             )}
           </div>
+          {(data.currentEffectiveRate ?? 0) > 0 && (
+            <div className="dcr-effective-rate">
+              <span className="dcr-effective-label">Effective Rate</span>
+              <span className="dcr-effective-value">{(data.currentEffectiveRate ?? 0).toFixed(2)}%</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -333,23 +359,34 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     )}
                     {plan.rate.type === 'surcharging' && (
                       <>
-                        <div className="card-rate-brand-row">
-                          <span className="card-rate-brand-icons">
+                        <div className="card-rate-brand-group">
+                          <div className="card-rate-brand-icons">
                             <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
                             <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
                             <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
-                          </span>
+                          </div>
                           <span>Qual: {plan.rate.vmcQualPercentage.toFixed(2)}% + ${plan.rate.vmcPerTx.toFixed(2)}</span>
+                          {(plan.rate.vmcNonQualPercentage > 0 || (plan.rate.vmcNonQualPerTx ?? 0) > 0) && (
+                            <span>Non-Qual: {plan.rate.vmcNonQualPercentage.toFixed(2)}% + ${(plan.rate.vmcNonQualPerTx ?? 0).toFixed(2)}</span>
+                          )}
                         </div>
-                        <div className="card-rate-brand-row">
-                          <span className="card-rate-brand-icons">
+                        <div className="card-rate-brand-group">
+                          <div className="card-rate-brand-icons">
                             <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
-                          </span>
+                          </div>
                           <span>Qual: {plan.rate.amexQualPercentage.toFixed(2)}% + ${plan.rate.amexPerTx.toFixed(2)}</span>
+                          {(plan.rate.amexNonQualPercentage > 0 || (plan.rate.amexNonQualPerTx ?? 0) > 0) && (
+                            <span>Non-Qual: {plan.rate.amexNonQualPercentage.toFixed(2)}% + ${(plan.rate.amexNonQualPerTx ?? 0).toFixed(2)}</span>
+                          )}
                         </div>
-                        <div className="card-rate-brand-row">
-                          <span className="card-rate-brand-label">Debit</span>
+                        <div className="card-rate-brand-group">
+                          <div className="card-rate-brand-icons">
+                            <DebitIcon />
+                          </div>
                           <span>Qual: {(plan.rate.debitQualPercentage ?? 0).toFixed(2)}% + ${(plan.rate.debitQualPerTx ?? 0).toFixed(2)}</span>
+                          {((plan.rate.debitNonQualPercentage ?? 0) > 0 || (plan.rate.debitNonQualPerTx ?? 0) > 0) && (
+                            <span>Non-Qual: {(plan.rate.debitNonQualPercentage ?? 0).toFixed(2)}% + ${(plan.rate.debitNonQualPerTx ?? 0).toFixed(2)}</span>
+                          )}
                         </div>
                       </>
                     )}
@@ -361,12 +398,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                     <span className="cs-label">Monthly Software</span>
                     <span className="cs-amount cs-spoton">{fmt(plan.spotonMonthly)}</span>
                   </div>
-                  {plan.rate.type === 'dual-pricing' && (
-                    <div className="card-summary-row">
-                      <span className="cs-label">Monthly Processing</span>
-                      <span className="cs-amount cs-spoton">$0.00*</span>
-                    </div>
-                  )}
+
                   <div className="card-summary-row">
                     <span className="cs-label">Current Software</span>
                     <span className="cs-amount cs-current">{fmt(data.currentMonthly)}</span>
@@ -380,7 +412,7 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
 
               {/* Card footer */}
               <div className="card-footer">
-                <div className="card-footer-label">Savings</div>
+                <div className="card-footer-label">Savings{plan.savingsDisclaimer ? '*' : ''}</div>
                 <div className="card-footer-savings">
                   {(() => {
                     const currentProc = data.currentProcessing;
@@ -404,15 +436,11 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   })()}
                 </div>
               </div>
+              {plan.rate.type === 'dual-pricing' && plan.savingsDisclaimer && (
+                <div className="card-disclaimer">*Dependent upon menu price lift</div>
+              )}
             </div>
           ))}
-        </div>
-      )}
-
-      {/* Dual-pricing footnote */}
-      {data.plans.some((p) => p.rate.type === 'dual-pricing') && (
-        <div className="doc-footnote">
-          * Based upon menu item price increase by the percentage amount
         </div>
       )}
 

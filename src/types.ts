@@ -10,7 +10,7 @@ export interface PlanFeature {
   currentIncluded: boolean;
 }
 
-export type RateType = 'interchange+' | 'flat' | 'dual-pricing' | 'tiered-simple' | 'tiered' | 'surcharging';
+export type RateType = 'none' | 'interchange+' | 'flat' | 'dual-pricing' | 'tiered-simple' | 'tiered' | 'surcharging';
 
 export interface PlanRate {
   type: RateType;
@@ -35,6 +35,10 @@ export interface PlanRate {
   /** Surcharging */
   debitQualPercentage: number;
   debitQualPerTx: number;
+  vmcNonQualPerTx: number;
+  amexNonQualPerTx: number;
+  debitNonQualPercentage: number;
+  debitNonQualPerTx: number;
 }
 
 export interface Plan {
@@ -46,6 +50,7 @@ export interface Plan {
   spotonProcessing: number;
   hardwarePrice: number;
   features: PlanFeature[];
+  savingsDisclaimer?: boolean;
 }
 
 export interface RateAnalysis {
@@ -69,4 +74,5 @@ export interface ProposalData {
   rateAnalysis: RateAnalysis;
   features: Feature[];
   plans: Plan[];
+  currentEffectiveRate: number;
 }

@@ -59,15 +59,31 @@ export function calcProjectedProcessing(rate: PlanRate, ra: RateAnalysis | null 
       );
     }
 
-    case 'surcharging':
+    case 'surcharging': {
+      const vmcRate = rate.vmcNonQualPercentage > 0
+        ? (rate.vmcQualPercentage + rate.vmcNonQualPercentage) / 2
+        : rate.vmcQualPercentage;
+      const vmcTx = (rate.vmcNonQualPerTx ?? 0) > 0
+        ? (rate.vmcPerTx + (rate.vmcNonQualPerTx ?? 0)) / 2
+        : rate.vmcPerTx;
+      const amexRate = rate.amexNonQualPercentage > 0
+        ? (rate.amexQualPercentage + rate.amexNonQualPercentage) / 2
+        : rate.amexQualPercentage;
+      const amexTx = (rate.amexNonQualPerTx ?? 0) > 0
+        ? (rate.amexPerTx + (rate.amexNonQualPerTx ?? 0)) / 2
+        : rate.amexPerTx;
+      const debitRate = (rate.debitNonQualPercentage ?? 0) > 0
+        ? ((rate.debitQualPercentage ?? 0) + (rate.debitNonQualPercentage ?? 0)) / 2
+        : (rate.debitQualPercentage ?? 0);
+      const debitTx = (rate.debitNonQualPerTx ?? 0) > 0
+        ? ((rate.debitQualPerTx ?? 0) + (rate.debitNonQualPerTx ?? 0)) / 2
+        : (rate.debitQualPerTx ?? 0);
       return (
-        r.vmcVolume * (rate.vmcQualPercentage / 100) +
-        r.vmcTransactions * rate.vmcPerTx +
-        r.amexVolume * (rate.amexQualPercentage / 100) +
-        r.amexTransactions * rate.amexPerTx +
-        r.atmVolume * (rate.debitQualPercentage / 100) +
-        r.atmTransactions * rate.debitQualPerTx
+        r.vmcVolume * (vmcRate / 100) + r.vmcTransactions * vmcTx +
+        r.amexVolume * (amexRate / 100) + r.amexTransactions * amexTx +
+        r.atmVolume * (debitRate / 100) + r.atmTransactions * debitTx
       );
+    }
 
     // Interchange+ — interchange itself is a pass-through that varies by card;
     // we cannot compute the total without knowing the underlying interchange cost.

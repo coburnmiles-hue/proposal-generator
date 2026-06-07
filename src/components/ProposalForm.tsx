@@ -149,28 +149,15 @@ export function ProposalForm({ data, onChange }: Props) {
     };
 
   // ---- Rate Analysis image parsing ----
-  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('gemini-api-key') || '');
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
-  const [apiKeyDraft, setApiKeyDraft] = useState('');
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
   const [isParsing, setIsParsing] = useState(false);
   const [parseMsg, setParseMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const saveApiKey = (key: string) => {
-    const trimmed = key.trim();
-    setApiKey(trimmed);
-    localStorage.setItem('gemini-api-key', trimmed);
-    setShowApiKeyInput(false);
-  };
-
-  const clearApiKey = () => {
-    setApiKey('');
-    localStorage.removeItem('gemini-api-key');
-  };
-
   const parseRateAnalysis = async (file: File) => {
-    if (!apiKey) {
-      setParseMsg({ type: 'error', text: 'Set a Gemini API key above to use auto-fill.' });
+    if (data.currentRate.type === 'none') {
+      setParseMsg({ type: 'error', text: 'Please select a Current Processing Rate type before uploading.' });
+      if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
     setIsParsing(true);
@@ -186,8 +173,61 @@ export function ProposalForm({ data, onChange }: Props) {
       const base64Data = dataUrl.split(',')[1];
       const mimeType = file.type || 'image/jpeg';
 
+      const rateType = data.currentRate.type;
+      const rateFields: Record<string, string> = {
+        vmcTransactions: 'integer: Visa/MC/Discover transaction count',
+        vmcVolume: 'float: Visa/MC/Discover total dollar volume',
+        vmcCurrentCost: 'float: Visa/MC/Discover total current cost',
+        amexTransactions: 'integer: AMEX transaction count',
+        amexVolume: 'float: AMEX total dollar volume',
+        amexCurrentCost: 'float: AMEX total current cost',
+        atmTransactions: 'integer: ATM/PIN Debit transaction count',
+        atmVolume: 'float: ATM/PIN Debit total dollar volume',
+        atmCurrentCost: 'float: ATM/PIN Debit total current cost',
+      };
+      if (rateType === 'interchange+') {
+        rateFields.basisPoints = 'float: V/MC/D basis points (markup over interchange, e.g. 30 for 0.30%)';
+        rateFields.interchangePerTx = 'float: V/MC/D per-transaction fee in dollars from Current Rate column';
+        rateFields.amexBasisPoints = 'float: AMEX basis points from Current Rate column (0 if not shown)';
+        rateFields.amexInterchangePerTx = 'float: AMEX per-transaction fee in dollars from Current Rate column (0 if not shown)';
+      } else if (rateType === 'flat') {
+        rateFields.flatPercentage = 'float: flat rate percentage for V/MC/D from Current Rate column';
+        rateFields.flatPerTx = 'float: flat per-transaction fee in dollars from Current Rate column';
+        rateFields.amexPercentage = 'float: AMEX flat rate percentage (0 if not shown)';
+        rateFields.amexPerTx = 'float: AMEX per-transaction fee (0 if not shown)';
+      } else if (rateType === 'dual-pricing') {
+        rateFields.flatPercentage = 'float: dual-pricing rate percentage from Current Rate column';
+        rateFields.flatPerTx = 'float: dual-pricing per-transaction fee in dollars from Current Rate column';
+      } else if (rateType === 'tiered-simple') {
+        rateFields.vmcPercentage = 'float: V/MC/D rate percentage from Current Rate column';
+        rateFields.vmcPerTx = 'float: V/MC/D per-transaction fee from Current Rate column';
+        rateFields.amexPercentage = 'float: AMEX rate percentage from Current Rate column';
+        rateFields.amexPerTx = 'float: AMEX per-transaction fee from Current Rate column';
+      } else if (rateType === 'tiered') {
+        rateFields.vmcQualPercentage = 'float: V/MC/D Qualified rate % from Current Rate column';
+        rateFields.vmcNonQualPercentage = 'float: V/MC/D Non-Qualified rate % from Current Rate column';
+        rateFields.vmcPerTx = 'float: V/MC/D per-transaction fee from Current Rate column';
+        rateFields.amexQualPercentage = 'float: AMEX Qualified rate % from Current Rate column';
+        rateFields.amexNonQualPercentage = 'float: AMEX Non-Qualified rate % from Current Rate column';
+        rateFields.amexPerTx = 'float: AMEX per-transaction fee from Current Rate column';
+      } else if (rateType === 'surcharging') {
+        rateFields.vmcQualPercentage = 'float: V/MC/D Qualified rate % from Current Rate column';
+        rateFields.vmcPerTx = 'float: V/MC/D Qual per-transaction fee from Current Rate column';
+        rateFields.vmcNonQualPercentage = 'float: V/MC/D Non-Qualified rate % from Current Rate column';
+        rateFields.vmcNonQualPerTx = 'float: V/MC/D Non-Qual per-transaction fee from Current Rate column';
+        rateFields.amexQualPercentage = 'float: AMEX Qualified rate % from Current Rate column';
+        rateFields.amexPerTx = 'float: AMEX Qual per-transaction fee from Current Rate column';
+        rateFields.amexNonQualPercentage = 'float: AMEX Non-Qualified rate % from Current Rate column';
+        rateFields.amexNonQualPerTx = 'float: AMEX Non-Qual per-transaction fee from Current Rate column';
+        rateFields.debitQualPercentage = 'float: Debit Qualified rate % from Current Rate column';
+        rateFields.debitQualPerTx = 'float: Debit Qual per-transaction fee from Current Rate column';
+        rateFields.debitNonQualPercentage = 'float: Debit Non-Qualified rate % from Current Rate column';
+        rateFields.debitNonQualPerTx = 'float: Debit Non-Qual per-transaction fee from Current Rate column';
+      }
+      const schema = Object.entries(rateFields).map(([k, v]) => `"${k}": <${v}>`).join(', ');
+
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -195,12 +235,12 @@ export function ProposalForm({ data, onChange }: Props) {
             contents: [{
               parts: [
                 {
-                  text: 'This is a payment processing rate analysis. Return ONLY a raw JSON object (no markdown, no explanation):\n{"vmcTransactions": <integer: transaction count from Transaction Fee row for Visa/MC/Discover>, "vmcVolume": <float: total dollar volume from Total Visa/MC/Discover row>, "vmcCurrentCost": <float: total current cost from Total Visa/MC/Discover row>, "amexTransactions": <integer: transaction count from Transaction Fee row for AMEX>, "amexVolume": <float: total dollar volume from Total AMEX row>, "amexCurrentCost": <float: total current cost from Total AMEX row>, "atmTransactions": <integer: transaction count from Transaction Fee row for ATM/PIN Debit>, "atmVolume": <float: total dollar volume from Total ATM/PIN Debit row>, "atmCurrentCost": <float: total current cost from Total ATM/PIN Debit row>}\nUse 0 for any value not found.',
+                  text: `This is a payment processing rate analysis document. The processing rate type is "${rateType}". Return ONLY a raw JSON object (no markdown, no explanation, no code fences) with these fields: {${schema}}. For rate percentages, return the numeric value as shown (e.g. 2.5 for 2.5%). Use 0 for any value not found.`,
                 },
                 { inline_data: { mime_type: mimeType, data: base64Data } },
               ],
             }],
-            generationConfig: { maxOutputTokens: 300 },
+            generationConfig: { maxOutputTokens: 4096, thinkingConfig: { thinkingBudget: 0 } },
           }),
         }
       );
@@ -211,9 +251,21 @@ export function ProposalForm({ data, onChange }: Props) {
       }
 
       const result = await response.json();
-      const text = (result.candidates?.[0]?.content?.parts?.[0]?.text ?? '').trim();
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('Could not parse AI response.');
+      // gemini-2.5-flash may return multiple parts (thinking + text); find the one with JSON
+      const parts: Array<{ text?: string }> = result.candidates?.[0]?.content?.parts ?? [];
+      const rawText = parts.map((pt) => pt.text ?? '').join('');
+      // Strip markdown code fences if present
+      const stripped = rawText.replace(/```(?:json)?\s*/gi, '').replace(/```/g, '');
+      let jsonMatch = stripped.match(/\{[\s\S]*\}/);
+      // If truncated (no closing brace), try to close it
+      if (!jsonMatch) {
+        const openBrace = stripped.indexOf('{');
+        if (openBrace !== -1) {
+          const partial = stripped.slice(openBrace).replace(/,\s*$/, '') + '}';
+          try { JSON.parse(partial); jsonMatch = [partial]; } catch { /* still bad */ }
+        }
+      }
+      if (!jsonMatch) throw new Error(`Could not parse AI response. Raw: ${rawText.slice(0, 200)}`);
 
       const p = JSON.parse(jsonMatch[0]);
       const vmcTx   = Math.round(Number(p.vmcTransactions)  || 0);
@@ -226,13 +278,59 @@ export function ProposalForm({ data, onChange }: Props) {
       const atmVol  = Number(p.atmVolume)       || 0;
       const atmCost = Number(p.atmCurrentCost)  || 0;
 
+      const totalCost = vmcCost + amexCost + atmCost;
+      const totalVolume = vmcVol + amexVol + atmVol;
+      const effectiveRate = totalVolume > 0 ? Math.round((totalCost / totalVolume) * 10000) / 100 : 0;
+
+      const updatedRate = { ...data.currentRate };
+      if (rateType === 'interchange+') {
+        updatedRate.basisPoints = Number(p.basisPoints) || 0;
+        updatedRate.interchangePerTx = Number(p.interchangePerTx) || 0;
+        updatedRate.amexBasisPoints = Number(p.amexBasisPoints) || 0;
+        updatedRate.amexInterchangePerTx = Number(p.amexInterchangePerTx) || 0;
+      } else if (rateType === 'flat' || rateType === 'dual-pricing') {
+        updatedRate.flatPercentage = Number(p.flatPercentage) || 0;
+        updatedRate.flatPerTx = Number(p.flatPerTx) || 0;
+        if (rateType === 'flat') {
+          updatedRate.amexPercentage = Number(p.amexPercentage) || 0;
+          updatedRate.amexPerTx = Number(p.amexPerTx) || 0;
+        }
+      } else if (rateType === 'tiered-simple') {
+        updatedRate.vmcPercentage = Number(p.vmcPercentage) || 0;
+        updatedRate.vmcPerTx = Number(p.vmcPerTx) || 0;
+        updatedRate.amexPercentage = Number(p.amexPercentage) || 0;
+        updatedRate.amexPerTx = Number(p.amexPerTx) || 0;
+      } else if (rateType === 'tiered') {
+        updatedRate.vmcQualPercentage = Number(p.vmcQualPercentage) || 0;
+        updatedRate.vmcNonQualPercentage = Number(p.vmcNonQualPercentage) || 0;
+        updatedRate.vmcPerTx = Number(p.vmcPerTx) || 0;
+        updatedRate.amexQualPercentage = Number(p.amexQualPercentage) || 0;
+        updatedRate.amexNonQualPercentage = Number(p.amexNonQualPercentage) || 0;
+        updatedRate.amexPerTx = Number(p.amexPerTx) || 0;
+      } else if (rateType === 'surcharging') {
+        updatedRate.vmcQualPercentage = Number(p.vmcQualPercentage) || 0;
+        updatedRate.vmcPerTx = Number(p.vmcPerTx) || 0;
+        updatedRate.vmcNonQualPercentage = Number(p.vmcNonQualPercentage) || 0;
+        updatedRate.vmcNonQualPerTx = Number(p.vmcNonQualPerTx) || 0;
+        updatedRate.amexQualPercentage = Number(p.amexQualPercentage) || 0;
+        updatedRate.amexPerTx = Number(p.amexPerTx) || 0;
+        updatedRate.amexNonQualPercentage = Number(p.amexNonQualPercentage) || 0;
+        updatedRate.amexNonQualPerTx = Number(p.amexNonQualPerTx) || 0;
+        updatedRate.debitQualPercentage = Number(p.debitQualPercentage) || 0;
+        updatedRate.debitQualPerTx = Number(p.debitQualPerTx) || 0;
+        updatedRate.debitNonQualPercentage = Number(p.debitNonQualPercentage) || 0;
+        updatedRate.debitNonQualPerTx = Number(p.debitNonQualPerTx) || 0;
+      }
+
       onChange({
         ...data,
         rateAnalysis: { vmcTransactions: vmcTx, vmcVolume: vmcVol, amexTransactions: amexTx, amexVolume: amexVol, atmTransactions: atmTx, atmVolume: atmVol },
-        currentProcessing: Math.round((vmcCost + amexCost + atmCost) * 100) / 100,
+        currentProcessing: Math.round(totalCost * 100) / 100,
+        currentEffectiveRate: effectiveRate,
+        currentRate: updatedRate,
       });
 
-      setParseMsg({ type: 'success', text: `Auto-filled — V/MC/D: ${vmcTx.toLocaleString()} tx · ${fmtCurr(vmcVol)}  |  Amex: ${amexTx.toLocaleString()} tx · ${fmtCurr(amexVol)}  |  ATM: ${atmTx.toLocaleString()} tx · ${fmtCurr(atmVol)}  |  Current processing: ${fmtCurr(vmcCost + amexCost + atmCost)}/mo` });
+      setParseMsg({ type: 'success', text: `Auto-filled — V/MC/D: ${vmcTx.toLocaleString()} tx · ${fmtCurr(vmcVol)}  |  Amex: ${amexTx.toLocaleString()} tx · ${fmtCurr(amexVol)}  |  ATM: ${atmTx.toLocaleString()} tx · ${fmtCurr(atmVol)}  |  Current processing: ${fmtCurr(totalCost)}/mo  |  Effective rate: ${effectiveRate.toFixed(2)}%` });
     } catch (err) {
       setParseMsg({ type: 'error', text: err instanceof Error ? err.message : 'Unexpected error.' });
     } finally {
@@ -366,35 +464,7 @@ export function ProposalForm({ data, onChange }: Props) {
         <div className="ra-block">
           <div className="ra-header">
             <h4 className="ra-title">Rate Analysis</h4>
-            <div className="ra-key-bar">
-              {apiKey ? (
-                <>
-                  <span className="ra-key-set">&#128273; Gemini key set</span>
-                  <button className="ra-key-link" onClick={clearApiKey}>clear</button>
-                </>
-              ) : (
-                <button className="ra-key-link" onClick={() => { setShowApiKeyInput(true); setApiKeyDraft(''); }}>
-                  &#128273; Set Gemini key
-                </button>
-              )}
-            </div>
           </div>
-
-          {showApiKeyInput && (
-            <div className="ra-key-input-row">
-              <input
-                type="password"
-                placeholder="AIza..."
-                value={apiKeyDraft}
-                onChange={(e) => setApiKeyDraft(e.target.value)}
-                className="ra-key-input"
-                onKeyDown={(e) => { if (e.key === 'Enter') saveApiKey(apiKeyDraft); if (e.key === 'Escape') setShowApiKeyInput(false); }}
-                autoFocus
-              />
-              <button className="btn-add" onClick={() => saveApiKey(apiKeyDraft)}>Save</button>
-              <button className="btn-remove" onClick={() => setShowApiKeyInput(false)}>&#10005;</button>
-            </div>
-          )}
 
           <div className="ra-upload-row">
             <label className={`ra-upload-btn${!apiKey || isParsing ? ' ra-upload-disabled' : ''}`}>
@@ -408,7 +478,6 @@ export function ProposalForm({ data, onChange }: Props) {
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) parseRateAnalysis(f); }}
               />
             </label>
-            {!apiKey && <span className="ra-upload-hint">Set a Gemini API key to enable auto-fill</span>}
           </div>
 
           {parseMsg && (
@@ -495,6 +564,7 @@ export function ProposalForm({ data, onChange }: Props) {
               value={data.currentRate.type}
               onChange={(e) => set('currentRate', { ...data.currentRate, type: e.target.value as PlanRate['type'] })}
             >
+              <option value="none" disabled>— Not Selected —</option>
               <option value="interchange+">Interchange+</option>
               <option value="flat">Flat</option>
               <option value="dual-pricing">Dual Pricing</option>
@@ -620,8 +690,16 @@ export function ProposalForm({ data, onChange }: Props) {
                 <label>Qualified (%)
                   <NumericInput value={data.currentRate.vmcQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, vmcQualPercentage: val })} min={0} />
                 </label>
-                <label>Per Transaction ($)
+                <label>Qual Per Transaction ($)
                   <NumericInput value={data.currentRate.vmcPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, vmcPerTx: val })} min={0} />
+                </label>
+              </div>
+              <div className="field-group">
+                <label>Non-Qualified (%)
+                  <NumericInput value={data.currentRate.vmcNonQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, vmcNonQualPercentage: val })} min={0} />
+                </label>
+                <label>Non-Qual Per Transaction ($)
+                  <NumericInput value={data.currentRate.vmcNonQualPerTx ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, vmcNonQualPerTx: val })} min={0} />
                 </label>
               </div>
               <div className="rate-group-label">AMEX</div>
@@ -629,8 +707,16 @@ export function ProposalForm({ data, onChange }: Props) {
                 <label>Qualified (%)
                   <NumericInput value={data.currentRate.amexQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, amexQualPercentage: val })} min={0} />
                 </label>
-                <label>Per Transaction ($)
+                <label>Qual Per Transaction ($)
                   <NumericInput value={data.currentRate.amexPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, amexPerTx: val })} min={0} />
+                </label>
+              </div>
+              <div className="field-group">
+                <label>Non-Qualified (%)
+                  <NumericInput value={data.currentRate.amexNonQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, amexNonQualPercentage: val })} min={0} />
+                </label>
+                <label>Non-Qual Per Transaction ($)
+                  <NumericInput value={data.currentRate.amexNonQualPerTx ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, amexNonQualPerTx: val })} min={0} />
                 </label>
               </div>
               <div className="rate-group-label">Debit</div>
@@ -638,12 +724,24 @@ export function ProposalForm({ data, onChange }: Props) {
                 <label>Qualified (%)
                   <NumericInput value={data.currentRate.debitQualPercentage ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, debitQualPercentage: val })} min={0} />
                 </label>
-                <label>Per Transaction ($)
+                <label>Qual Per Transaction ($)
                   <NumericInput value={data.currentRate.debitQualPerTx ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, debitQualPerTx: val })} min={0} />
+                </label>
+              </div>
+              <div className="field-group">
+                <label>Non-Qualified (%)
+                  <NumericInput value={data.currentRate.debitNonQualPercentage ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, debitNonQualPercentage: val })} min={0} />
+                </label>
+                <label>Non-Qual Per Transaction ($)
+                  <NumericInput value={data.currentRate.debitNonQualPerTx ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, debitNonQualPerTx: val })} min={0} />
                 </label>
               </div>
             </>
           )}
+          <div className="calc-divider" />
+          <label>Effective Rate (%)
+            <NumericInput value={data.currentEffectiveRate ?? 0} onChange={(val) => set('currentEffectiveRate', val)} min={0} />
+          </label>
         </div>
       </section>
 
@@ -754,16 +852,26 @@ export function ProposalForm({ data, onChange }: Props) {
               )}
 
               {plan.rate.type === 'dual-pricing' && (
-                <div className="field-group">
-                  <label>
-                    Percentage (%)
-                    <NumericInput value={plan.rate.flatPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: val })} min={0} />
+                <>
+                  <div className="field-group">
+                    <label>
+                      Percentage (%)
+                      <NumericInput value={plan.rate.flatPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPercentage: val })} min={0} />
+                    </label>
+                    <label>
+                      Per Transaction ($)
+                      <NumericInput value={plan.rate.flatPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: val })} min={0} />
+                    </label>
+                  </div>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={!!plan.savingsDisclaimer}
+                      onChange={(e) => updatePlan(plan.id, 'savingsDisclaimer', e.target.checked)}
+                    />
+                    Add * savings disclaimer
                   </label>
-                  <label>
-                    Per Transaction ($)
-                    <NumericInput value={plan.rate.flatPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, flatPerTx: val })} min={0} />
-                  </label>
-                </div>
+                </>
               )}
 
               {plan.rate.type === 'tiered-simple' && (
@@ -841,8 +949,18 @@ export function ProposalForm({ data, onChange }: Props) {
                       <NumericInput value={plan.rate.vmcQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcQualPercentage: val })} min={0} />
                     </label>
                     <label>
-                      Per Transaction ($)
+                      Qual Per Transaction ($)
                       <NumericInput value={plan.rate.vmcPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcPerTx: val })} min={0} />
+                    </label>
+                  </div>
+                  <div className="field-group">
+                    <label>
+                      Non-Qualified (%)
+                      <NumericInput value={plan.rate.vmcNonQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcNonQualPercentage: val })} min={0} />
+                    </label>
+                    <label>
+                      Non-Qual Per Transaction ($)
+                      <NumericInput value={plan.rate.vmcNonQualPerTx ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcNonQualPerTx: val })} min={0} />
                     </label>
                   </div>
                   <div className="rate-group-label">AMEX</div>
@@ -852,8 +970,18 @@ export function ProposalForm({ data, onChange }: Props) {
                       <NumericInput value={plan.rate.amexQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexQualPercentage: val })} min={0} />
                     </label>
                     <label>
-                      Per Transaction ($)
+                      Qual Per Transaction ($)
                       <NumericInput value={plan.rate.amexPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPerTx: val })} min={0} />
+                    </label>
+                  </div>
+                  <div className="field-group">
+                    <label>
+                      Non-Qualified (%)
+                      <NumericInput value={plan.rate.amexNonQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexNonQualPercentage: val })} min={0} />
+                    </label>
+                    <label>
+                      Non-Qual Per Transaction ($)
+                      <NumericInput value={plan.rate.amexNonQualPerTx ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexNonQualPerTx: val })} min={0} />
                     </label>
                   </div>
                   <div className="rate-group-label">Debit</div>
@@ -863,8 +991,18 @@ export function ProposalForm({ data, onChange }: Props) {
                       <NumericInput value={plan.rate.debitQualPercentage ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, debitQualPercentage: val })} min={0} />
                     </label>
                     <label>
-                      Per Transaction ($)
+                      Qual Per Transaction ($)
                       <NumericInput value={plan.rate.debitQualPerTx ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, debitQualPerTx: val })} min={0} />
+                    </label>
+                  </div>
+                  <div className="field-group">
+                    <label>
+                      Non-Qualified (%)
+                      <NumericInput value={plan.rate.debitNonQualPercentage ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, debitNonQualPercentage: val })} min={0} />
+                    </label>
+                    <label>
+                      Non-Qual Per Transaction ($)
+                      <NumericInput value={plan.rate.debitNonQualPerTx ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, debitNonQualPerTx: val })} min={0} />
                     </label>
                   </div>
                 </>
