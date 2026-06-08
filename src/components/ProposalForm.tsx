@@ -689,52 +689,52 @@ export function ProposalForm({ data, onChange }: Props) {
             <>
               <div className="rate-group-label">Visa / MC / Discover</div>
               <div className="field-group">
-                <label>Qualified (%)
+                <label>Qual (%)
                   <NumericInput value={data.currentRate.vmcQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, vmcQualPercentage: val })} min={0} />
                 </label>
-                <label>Qual Per Transaction ($)
+                <label>Qual ($/tx)
                   <NumericInput value={data.currentRate.vmcPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, vmcPerTx: val })} min={0} />
                 </label>
               </div>
               <div className="field-group">
-                <label>Non-Qualified (%)
+                <label>Non-Qual (%)
                   <NumericInput value={data.currentRate.vmcNonQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, vmcNonQualPercentage: val })} min={0} />
                 </label>
-                <label>Non-Qual Per Transaction ($)
+                <label>Non-Qual ($/tx)
                   <NumericInput value={data.currentRate.vmcNonQualPerTx ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, vmcNonQualPerTx: val })} min={0} />
                 </label>
               </div>
               <div className="rate-group-label">AMEX</div>
               <div className="field-group">
-                <label>Qualified (%)
+                <label>Qual (%)
                   <NumericInput value={data.currentRate.amexQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, amexQualPercentage: val })} min={0} />
                 </label>
-                <label>Qual Per Transaction ($)
+                <label>Qual ($/tx)
                   <NumericInput value={data.currentRate.amexPerTx} onChange={(val) => set('currentRate', { ...data.currentRate, amexPerTx: val })} min={0} />
                 </label>
               </div>
               <div className="field-group">
-                <label>Non-Qualified (%)
+                <label>Non-Qual (%)
                   <NumericInput value={data.currentRate.amexNonQualPercentage} onChange={(val) => set('currentRate', { ...data.currentRate, amexNonQualPercentage: val })} min={0} />
                 </label>
-                <label>Non-Qual Per Transaction ($)
+                <label>Non-Qual ($/tx)
                   <NumericInput value={data.currentRate.amexNonQualPerTx ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, amexNonQualPerTx: val })} min={0} />
                 </label>
               </div>
               <div className="rate-group-label">Debit</div>
               <div className="field-group">
-                <label>Qualified (%)
+                <label>Qual (%)
                   <NumericInput value={data.currentRate.debitQualPercentage ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, debitQualPercentage: val })} min={0} />
                 </label>
-                <label>Qual Per Transaction ($)
+                <label>Qual ($/tx)
                   <NumericInput value={data.currentRate.debitQualPerTx ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, debitQualPerTx: val })} min={0} />
                 </label>
               </div>
               <div className="field-group">
-                <label>Non-Qualified (%)
+                <label>Non-Qual (%)
                   <NumericInput value={data.currentRate.debitNonQualPercentage ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, debitNonQualPercentage: val })} min={0} />
                 </label>
-                <label>Non-Qual Per Transaction ($)
+                <label>Non-Qual ($/tx)
                   <NumericInput value={data.currentRate.debitNonQualPerTx ?? 0} onChange={(val) => set('currentRate', { ...data.currentRate, debitNonQualPerTx: val })} min={0} />
                 </label>
               </div>
@@ -757,7 +757,7 @@ export function ProposalForm({ data, onChange }: Props) {
         </div>
 
         {data.plans.map((plan, pi) => (
-          <div key={plan.id} className="plan-editor">
+          <div key={plan.id} className={`plan-editor theme-${pi}`}>
             <div className="plan-editor-header">
               <input
                 className="plan-name-input"
@@ -946,64 +946,52 @@ export function ProposalForm({ data, onChange }: Props) {
                 <>
                   <div className="rate-group-label">Visa / MC / Discover</div>
                   <div className="field-group">
-                    <label>
-                      Qualified (%)
+                    <label>Qual (%)
                       <NumericInput value={plan.rate.vmcQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcQualPercentage: val })} min={0} />
                     </label>
-                    <label>
-                      Qual Per Transaction ($)
+                    <label>Qual ($/tx)
                       <NumericInput value={plan.rate.vmcPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcPerTx: val })} min={0} />
                     </label>
                   </div>
                   <div className="field-group">
-                    <label>
-                      Non-Qualified (%)
+                    <label>Non-Qual (%)
                       <NumericInput value={plan.rate.vmcNonQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcNonQualPercentage: val })} min={0} />
                     </label>
-                    <label>
-                      Non-Qual Per Transaction ($)
+                    <label>Non-Qual ($/tx)
                       <NumericInput value={plan.rate.vmcNonQualPerTx ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, vmcNonQualPerTx: val })} min={0} />
                     </label>
                   </div>
                   <div className="rate-group-label">AMEX</div>
                   <div className="field-group">
-                    <label>
-                      Qualified (%)
+                    <label>Qual (%)
                       <NumericInput value={plan.rate.amexQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexQualPercentage: val })} min={0} />
                     </label>
-                    <label>
-                      Qual Per Transaction ($)
+                    <label>Qual ($/tx)
                       <NumericInput value={plan.rate.amexPerTx} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexPerTx: val })} min={0} />
                     </label>
                   </div>
                   <div className="field-group">
-                    <label>
-                      Non-Qualified (%)
+                    <label>Non-Qual (%)
                       <NumericInput value={plan.rate.amexNonQualPercentage} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexNonQualPercentage: val })} min={0} />
                     </label>
-                    <label>
-                      Non-Qual Per Transaction ($)
+                    <label>Non-Qual ($/tx)
                       <NumericInput value={plan.rate.amexNonQualPerTx ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, amexNonQualPerTx: val })} min={0} />
                     </label>
                   </div>
                   <div className="rate-group-label">Debit</div>
                   <div className="field-group">
-                    <label>
-                      Qualified (%)
+                    <label>Qual (%)
                       <NumericInput value={plan.rate.debitQualPercentage ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, debitQualPercentage: val })} min={0} />
                     </label>
-                    <label>
-                      Qual Per Transaction ($)
+                    <label>Qual ($/tx)
                       <NumericInput value={plan.rate.debitQualPerTx ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, debitQualPerTx: val })} min={0} />
                     </label>
                   </div>
                   <div className="field-group">
-                    <label>
-                      Non-Qualified (%)
+                    <label>Non-Qual (%)
                       <NumericInput value={plan.rate.debitNonQualPercentage ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, debitNonQualPercentage: val })} min={0} />
                     </label>
-                    <label>
-                      Non-Qual Per Transaction ($)
+                    <label>Non-Qual ($/tx)
                       <NumericInput value={plan.rate.debitNonQualPerTx ?? 0} onChange={(val) => updatePlan(plan.id, 'rate', { ...plan.rate, debitNonQualPerTx: val })} min={0} />
                     </label>
                   </div>
