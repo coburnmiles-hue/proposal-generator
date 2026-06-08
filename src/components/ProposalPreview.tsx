@@ -3,7 +3,6 @@ import type { ProposalData } from '../types';
 import { SpotOnLogo } from './SpotOnLogo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCcVisa, faCcMastercard, faCcDiscover, faCcAmex } from '@fortawesome/free-brands-svg-icons';
-import { calcProjectedProcessing } from '../utils';
 
 const DebitIcon = () => (
   <svg className="brand-icon debit-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">

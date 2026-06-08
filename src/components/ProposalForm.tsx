@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import type { Plan, PlanFeature, PlanRate, ProposalData } from '../types';
-import { hasRateAnalysisData, calcProjectedProcessing } from '../utils';
+import { hasRateAnalysisData } from '../utils';
 
 /** Controlled numeric input that allows typing values like 0.05 without swallowing zeros */
 function NumericInput({ value, onChange, ...props }: {
