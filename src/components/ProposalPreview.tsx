@@ -106,15 +106,17 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
         data.currentRate.amexNonQualPercentage > 0 || data.currentRate.amexQualPercentage > 0 ||
         (data.currentEffectiveRate ?? 0) > 0) && (
         <div className="doc-current-rate">
-          <span className="dcr-label">Current Rate</span>
-          <span className="dcr-badge">
-            {data.currentRate.type === 'interchange+' ? 'Interchange+'
-              : data.currentRate.type === 'flat' ? 'Flat Rate'
-              : data.currentRate.type === 'dual-pricing' ? 'Dual Pricing'
-              : data.currentRate.type === 'tiered-simple' ? 'Tiered'
-              : data.currentRate.type === 'surcharging' ? 'Surcharging'
-              : 'Tiered'}
-          </span>
+          <div className="dcr-header">
+            <span className="dcr-label">Current Rate</span>
+            <span className="dcr-badge">
+              {data.currentRate.type === 'interchange+' ? 'Interchange+'
+                : data.currentRate.type === 'flat' ? 'Flat Rate'
+                : data.currentRate.type === 'dual-pricing' ? 'Dual Pricing'
+                : data.currentRate.type === 'tiered-simple' ? 'Tiered'
+                : data.currentRate.type === 'surcharging' ? 'Surcharging'
+                : 'Tiered'}
+            </span>
+          </div>
           <div className="dcr-details">
             {data.currentRate.type === 'interchange+' && (
               (data.currentRate.amexBasisPoints > 0 || data.currentRate.amexInterchangePerTx > 0) ? (
@@ -135,7 +137,14 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   </div>
                 </div>
               ) : (
-                <span>{data.currentRate.basisPoints} bps + ${data.currentRate.interchangePerTx.toFixed(2)}</span>
+                <div className="dcr-two-col"><div className="dcr-col">
+                  <div className="dcr-col-icons">
+                    <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                  </div>
+                  <span>{data.currentRate.basisPoints} bps + ${data.currentRate.interchangePerTx.toFixed(2)}</span>
+                </div></div>
               )
             )}
             {data.currentRate.type === 'flat' && (
@@ -157,11 +166,26 @@ export const ProposalPreview = forwardRef<HTMLDivElement, Props>(({ data }, ref)
                   </div>
                 </div>
               ) : (
-                <span>{data.currentRate.flatPercentage.toFixed(2)}% + ${data.currentRate.flatPerTx.toFixed(2)}</span>
+                <div className="dcr-two-col"><div className="dcr-col">
+                  <div className="dcr-col-icons">
+                    <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                    <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                  </div>
+                  <span>{data.currentRate.flatPercentage.toFixed(2)}% + ${data.currentRate.flatPerTx.toFixed(2)}</span>
+                </div></div>
               )
             )}
             {data.currentRate.type === 'dual-pricing' && (
-              <span>{data.currentRate.flatPercentage.toFixed(2)}% + ${data.currentRate.flatPerTx.toFixed(2)}</span>
+              <div className="dcr-two-col"><div className="dcr-col">
+                <div className="dcr-col-icons">
+                  <FontAwesomeIcon icon={faCcVisa} className="brand-icon" />
+                  <FontAwesomeIcon icon={faCcMastercard} className="brand-icon" />
+                  <FontAwesomeIcon icon={faCcDiscover} className="brand-icon" />
+                  <FontAwesomeIcon icon={faCcAmex} className="brand-icon" />
+                </div>
+                <span>{data.currentRate.flatPercentage.toFixed(2)}% + ${data.currentRate.flatPerTx.toFixed(2)}</span>
+              </div></div>
             )}
             {data.currentRate.type === 'tiered-simple' && (
               <div className="dcr-two-col">

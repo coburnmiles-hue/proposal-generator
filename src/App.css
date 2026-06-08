@@ -859,25 +859,30 @@ textarea { resize: vertical; }
 
 /* Current Rate reference block */
 .doc-current-rate {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 12px 0 18px;
-  padding: 8px 14px;
+  margin: 12px 0 20px;
   background: #fff5f7;
   border: 1px solid #f5c0cb;
   border-left: 4px solid var(--brand);
-  border-radius: 8px;
+  border-radius: 10px;
+  overflow: hidden;
 }
+
+.dcr-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #f5c0cb;
+}
+
 .dcr-label {
   font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--brand);
-  margin-right: 2px;
 }
+
 .dcr-badge {
   font-size: 10px;
   font-weight: 800;
@@ -888,26 +893,28 @@ textarea { resize: vertical; }
   padding: 2px 8px;
   border-radius: 20px;
 }
+
 .dcr-details {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  gap: 0;
   font-size: 11px;
   font-weight: 400;
   color: var(--text-dark);
 }
+
 .dcr-details strong {
   font-weight: 700;
 }
+
 .dcr-effective-rate {
-  flex-basis: 100%;
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: 7px 14px;
   border-top: 1px dashed #f5c0cb;
-  padding-top: 6px;
-  margin-top: 2px;
+  background: rgba(232,25,75,0.03);
 }
+
 .dcr-effective-label {
   font-size: 10px;
   font-weight: 800;
@@ -915,6 +922,7 @@ textarea { resize: vertical; }
   letter-spacing: 0.06em;
   color: var(--brand);
 }
+
 .dcr-effective-value {
   font-size: 14px;
   font-weight: 800;
@@ -924,19 +932,30 @@ textarea { resize: vertical; }
 /* Two-column layout in current rate block */
 .dcr-two-col {
   display: flex;
-  gap: 24px;
+  width: 100%;
 }
+
 .dcr-col {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 3px;
-  min-width: 140px;
+  padding: 10px 14px;
+  border-right: 1px solid #f5c0cb;
 }
+.dcr-col:last-child { border-right: none; }
+
 .dcr-col-icons {
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
+}
+
+.dcr-col span {
+  font-size: 11.5px;
+  color: var(--text-dark);
+  line-height: 1.5;
 }
 
 /* Brand icon colors */
